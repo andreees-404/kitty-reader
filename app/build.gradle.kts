@@ -69,6 +69,7 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.1")
 
+    // Dependencia de navegación
     implementation ("androidx.navigation:navigation-compose:2.7.1")
 
     testImplementation("junit:junit:4.13.2")
@@ -81,9 +82,21 @@ dependencies {
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Custom
     implementation ("androidx.compose.material:material-icons-extended:1.4.3")
     implementation("androidx.compose.material3:material3:1.0.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.0.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.0")
+// Fragment
+    // implementation("androidx.fragment:fragment-ktx:1.6.1")
+
+    // CardView
+    implementation("androidx.cardview:cardview:1.0.0")
+
+
+
 
 
 }
