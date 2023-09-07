@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.screens.navigation
+package com.cutedomain.kittyreader.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
+import com.cutedomain.kittyreader.models.DataProvider
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,8 +98,11 @@ fun HomeLibrary(navController: NavController){
 
 }
 
+@SuppressLint("RememberReturnType")
 @Composable
 fun LibraryContent(navController: NavController){
+    val books=remember { DataProvider.bookList }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -152,7 +157,7 @@ fun LibraryContent(navController: NavController){
 
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun HomePreview(){
     HomeLibrary(rememberNavController())
