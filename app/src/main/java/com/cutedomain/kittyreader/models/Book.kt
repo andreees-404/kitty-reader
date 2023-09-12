@@ -6,5 +6,5 @@ data class Book(
     val author: String,
     val date: String,
     val category: String,
-    val price: Float= 0.0F
+    val image: Int
 )

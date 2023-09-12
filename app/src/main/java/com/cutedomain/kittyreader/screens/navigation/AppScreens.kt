@@ -5,5 +5,7 @@ sealed class AppScreens(val route: String){
     //  -> login_screen hace referencia al fichero LoginScreen
     object LoginScreen: AppScreens(route="login_screen")
     object RegisterScreen: AppScreens(route="register_screen")
+    object LibraryScreen: AppScreens(route="library_screen")
+    object SplashScreen: AppScreens(route = "loading_screen")
 
 }
