@@ -3,9 +3,11 @@ package com.cutedomain.kittyreader.screens
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -79,8 +81,20 @@ fun BookListBody(navController: NavController, paddingValues: PaddingValues){
 
     val length=books.size
     LazyColumn(
+        modifier= Modifier
+            .padding(paddingValues)
+            .fillMaxSize()
 
     ){
+        item {
+            Row(
+                modifier=Modifier.fillMaxWidth().size(180.dp)
+            ){
+                Image(painter = painterResource(id = R.drawable.kittybanner),
+                    contentDescription = "Kitty banner",
+                    modifier=Modifier.fillMaxSize())
+            }
+        }
         items(books){
             book -> BookCard(
                 isbn = book.isbn,
@@ -104,6 +118,7 @@ fun BookCard(
     category: String,
     image: Int
 ){
+    val context= LocalContext.current
     val bookId=isbn
     val bookCategory=category
     Card(
@@ -111,7 +126,12 @@ fun BookCard(
         colors = CardDefaults.cardColors(Color(0xFFDBB9D0)),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
+            .padding(8.dp)
+            .clickable {
+                Toast
+                    .makeText(context, "Card Click $isbn", Toast.LENGTH_SHORT)
+                    .show()
+            }
     ){
         Row {
             Image(
