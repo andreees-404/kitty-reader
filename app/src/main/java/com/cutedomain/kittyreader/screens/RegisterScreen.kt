@@ -186,9 +186,7 @@ fun RegisterForm(navController: NavController){
                     leadingIcon = {
                         val userIcon = Icons.Filled.Mail
                         val desc = "user icon"
-
-
-                            Icon(imageVector = userIcon, contentDescription = desc)
+                        Icon(imageVector = userIcon, contentDescription = desc)
                         }
                 )
 
