@@ -6,11 +6,10 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,7 +29,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -58,12 +59,16 @@ fun LibraryScreen(navController: NavController){
 
     // Contenedor principal
     Scaffold(
-        topBar = {},
+        topBar = { AppBar{
+            Toast.makeText(context, "Desplegar barra lateral?", Toast.LENGTH_SHORT).show()
+            }},
         floatingActionButton = { AddButton{
             Toast.makeText(context, "Add a book", Toast.LENGTH_SHORT).show()
         } }
     ){
-        innerPadding -> BookList(context = context, books = DataProvider.bookList, innerPadding = innerPadding)
+
+        innerPadding ->
+        BookList(context = context, books = DataProvider.bookList, innerPadding = innerPadding)
     }
 }
 
@@ -71,10 +76,15 @@ fun LibraryScreen(navController: NavController){
 // Lista de libros
 @Composable
 fun BookList(context: Context, books: List<Book>, innerPadding: PaddingValues) {
+    Image(painter = painterResource(id = R.drawable.kittybanner),
+        contentDescription = "Kitty Banner",
+        modifier= Modifier
+            .padding(innerPadding)
+            .fillMaxWidth())
     LazyColumn(
         modifier= Modifier
             .fillMaxSize()
-            .padding(innerPadding)
+            .padding(paddingValues = PaddingValues(top = 240.dp))
     ) {
         books.forEach{ bookItem ->
             item {
@@ -92,7 +102,7 @@ fun BookList(context: Context, books: List<Book>, innerPadding: PaddingValues) {
                                 )
                                 .show()
                         } ,
-                    colors=CardDefaults.cardColors(colorResource(id = R.color.backgorundMain)),
+                    colors=CardDefaults.cardColors(colorResource(id = R.color.card_description)),
                     elevation = CardDefaults.cardElevation(8.dp)
                 ) {
                     BookCard(
@@ -122,13 +132,13 @@ fun BookCard(isbn: String, title: String, author: String, date: String, category
                 contentDescription = null,
                 modifier= Modifier
                     .padding(5.dp)
-                    .size(120.dp))
+                    .size(80.dp))
         }
         Column(
             modifier= Modifier
                 .padding(
                     paddingValues = PaddingValues(
-                        start = 20.dp,
+                        start = 10.dp,
                         top = 5.dp,
                         end = 5.dp,
                         bottom = 5.dp
@@ -136,38 +146,23 @@ fun BookCard(isbn: String, title: String, author: String, date: String, category
                 )
                 .fillMaxSize()
         ) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors=CardDefaults.cardColors(colorResource(
-                    id = R.color.card_description))
-            ) {
-                Column(modifier = Modifier.padding(10.dp)) {
+                Column(modifier = Modifier.fillMaxWidth()) {
                     // Mejorar a un contenedor con varios textos
-                    Text(text = title, fontSize = 18.sp, style= TextStyle(color= colorResource(id = R.color.black)), fontStyle = FontStyle.Italic)
+                    Text(text = title, fontSize = 18.sp, style= TextStyle(color= colorResource(id = R.color.black)))
                     Text(
-                        text = "Author: $author", fontSize = 14.sp, style = TextStyle(
-                            color = colorResource(
-                                id = R.color.gray
-                            )
+                        text = author,
+                        fontSize = 14.sp, style = TextStyle(color = colorResource(id = R.color.gray)
                         ),
                         fontStyle = FontStyle.Italic
                     )
-                }
-            }
+                    Box(
+                        modifier=Modifier.padding(PaddingValues(top=15.dp)),
+                        contentAlignment = Alignment.BottomStart){
+                        Text(text = "Progress bar here!")
+                    }
+                  }
 
-            // Espacio entre la barra de progreso y la descripción
-            Spacer(modifier = Modifier.padding(PaddingValues(top = 30.dp)))
-
-            // Barra de progreso
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                Text(text = "Progess bar here!")
-                // ProgressBar()
-            }
         }
-
     }
 }
 
@@ -175,21 +170,23 @@ fun BookCard(isbn: String, title: String, author: String, date: String, category
 // AppBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(onClick: () -> Unit, context: Context){
+fun AppBar(onClick: () -> Unit){
     CenterAlignedTopAppBar(
         title = { Text(
             text = stringResource(id = R.string.app_name),
             maxLines = 1,
+            fontSize=24.sp,
             style = TextStyle(
                 color= colorResource(
                     id = R.color.white))
         )},
         navigationIcon = {
-            IconButton(onClick = { Toast.makeText(context, "Desplegar barra lateral?", Toast.LENGTH_SHORT).show() }) {
+            IconButton(onClick = { onClick() }) {
                Icon(imageVector = Icons.Filled.Menu, contentDescription = null, tint= colorResource(
                    id = R.color.white))
             }
-        }
+        },
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(colorResource(id = R.color.main_color))
     )
 }
 
