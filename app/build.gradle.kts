@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -89,11 +91,17 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.0")
-// Fragment
     // implementation("androidx.fragment:fragment-ktx:1.6.1")
 
-    // CardView
-    implementation("androidx.cardview:cardview:1.0.0")
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+        // Import the BoM for the Firebase platform
+        implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
+        // Add the dependency for the Firebase Authentication library
+        // When using the BoM, you don't specify versions in Firebase library dependencies
+        implementation("com.google.firebase:firebase-auth-ktx")
+
 
 
 
