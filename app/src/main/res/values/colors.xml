@@ -14,4 +14,6 @@
     <color name="card_color">#D3A588</color>
     <color name="secondary_color">#ECE2D0</color>
     <color name="tertiary_color">#7A6563</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="grey">#8A8A8A</color>
 </resources>

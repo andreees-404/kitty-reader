@@ -1,6 +1,10 @@
 package com.cutedomain.kittyreader.screens
 
+
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,9 +15,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
@@ -23,6 +29,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -37,6 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -53,6 +63,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
 import com.cutedomain.kittyreader.screens.navigation.AppScreens
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -70,7 +81,14 @@ fun LoginScreen(navController: NavController){
 
                     )
             }, colors = TopAppBarDefaults.smallTopAppBarColors(containerColor=Color(0xFFFF72A2)
-            )
+            ),
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate(AppScreens.LibraryScreen.route) }) {
+                       Icon(imageVector = Icons.Filled.Book,
+                           contentDescription = "Go to library",
+                           tint= colorResource(id = R.color.white))
+                    }
+                }
             )
         }
     ) {
@@ -82,6 +100,7 @@ fun LoginScreen(navController: NavController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginForm(navController: NavController){
+    val context= LocalContext.current
     Column(
         modifier= Modifier
             .fillMaxSize()
@@ -90,7 +109,7 @@ fun LoginForm(navController: NavController){
         horizontalAlignment = Alignment.CenterHorizontally
         ) {
         // Variable email
-        var name by rememberSaveable {
+        var email by rememberSaveable {
             mutableStateOf("")
         }
         // Variable password
@@ -122,10 +141,10 @@ fun LoginForm(navController: NavController){
                     ),
                 )
             }
-            // Useranme
+            // Email input
             TextField(
-                value = name,
-                onValueChange = { name = it },
+                value = email,
+                onValueChange = { email = it },
                 label = { Text("Email", style = TextStyle.Default.copy(fontSize = 14.sp)) },
                 leadingIcon = {
                     Icon(imageVector= Icons.Filled.Email, contentDescription = "Email input")
@@ -174,16 +193,20 @@ fun LoginForm(navController: NavController){
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = { },
+                onClick = { SignIn(
+                    email = email,
+                    pass= pass,
+                    context = context,
+                    navController = navController) },
                 contentPadding = PaddingValues(
                     start = 20.dp,
                     top = 12.dp,
                     end = 20.dp,
                     bottom = 12.dp
                 ),
-                colors = ButtonDefaults.elevatedButtonColors(containerColor= Color(0xFFFF5E94))
+                colors = ButtonDefaults.elevatedButtonColors(containerColor= colorResource(id = R.color.main_color))
             ) {
-                Text(text = "Iniciar Sesión",style= TextStyle(color= Color(0xFFFFFFFF)))
+                Text(text = "Iniciar Sesión",style= TextStyle(color= colorResource(id = R.color.white)))
             }
             Spacer(modifier = Modifier.height(15.dp))
             val linkRegistrar = buildAnnotatedString {
@@ -206,14 +229,86 @@ fun LoginForm(navController: NavController){
                 onClick = {
                     navController.navigate(AppScreens.RegisterScreen.route)
                 },
+                modifier= Modifier.padding(PaddingValues(bottom=40.dp))
             )
+
+            // Iniciar sesión con Google
+            OutlinedButton(onClick = { SignInGoogle() },
+                colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(PaddingValues(start = 50.dp, end = 50.dp,bottom=10.dp)),
+                shape = RoundedCornerShape(50)
+                ){
+                Image(painter = painterResource(id = R.drawable.google),
+                    contentDescription = null)
+                Text(text = "Inicia sesión con Google",
+                    modifier=Modifier.padding(PaddingValues(start=10.dp)),
+                    style= TextStyle(color= colorResource(id = R.color.black))
+                )
+            }
+
+            // Iniciar sesión con Facebook
+            OutlinedButton(onClick = { SignInFacebook() },
+                colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(PaddingValues(start = 50.dp, end = 50.dp)) ,
+                shape = RoundedCornerShape(50)
+                ) {
+                Image(painter =painterResource(id = R.drawable.facebook),
+                    contentDescription = null)
+                Text(text = "Inicia sesión con Facebook",
+                    modifier= Modifier
+                        .padding(PaddingValues(start = 10.dp))
+                        .fillMaxWidth(),
+                    style= TextStyle(color= colorResource(id = R.color.black))
+                )
+            }
         }
 
     }
+}
+
+private fun SignInGoogle() {
+
+}
+
+private fun SignInFacebook() {
+
 }
 
 @Composable
 @Preview
 fun RegisterPreview(){
     LoginScreen(navController = rememberNavController())
+}
+
+// Logics
+
+
+// Mostrar diálogo de error
+fun ShowErr(context: Context, message: String) {
+    val builder=AlertDialog.Builder(context)
+    builder.setTitle("Error")
+    builder.setMessage(message)
+    builder.setPositiveButton("Aceptar", null)
+    val dialog: AlertDialog = builder.create()
+    dialog.show()
+}
+
+// Iniciar sesión
+// Migrar a un controlador
+private fun SignIn(email: String, pass: String, context: Context, navController: NavController){
+    if (email.isNotEmpty() && pass.isNotEmpty()){
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email,pass).
+        addOnCompleteListener{
+            if (it.isSuccessful){
+                navController.navigate(AppScreens.LibraryScreen.route)
+            }else ShowErr(context, "El usuario ingresado no es válido, vuelve a intentarlo.")
+        }
+    }
+    else{
+        ShowErr(context, "Los campos no pueden estar vacíos, por favor intenta otra vez.")
+    }
 }

@@ -5,12 +5,12 @@ package com.cutedomain.kittyreader
 * Date: 27th August, 2023
 * Notes: Para este proyecto se utiliza jetpack compose,
 *        por lo que se recomienda investigar su documentación.
-*
 * Changes: (1) Se ha creado la interfaz visual necesaria para codificar
 *           el funcionamiento de cada componente
 * Changes (2): Se ha creado el panel de login aún sin funcionamiento
 * Changes (3): Pantalla de registro creada con botón para volver al login
 * Changes (4): Se ha establecido la comunicación de la página de Login con la página de Registro
+* Changes (5): Se ha agregado autenticación basada en Firebase -> email y contraseña
 * */
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -28,6 +28,8 @@ class MainActivity : ComponentActivity(){
    // private lateinit var binding: ActivityMainBinding
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
+
+       Thread.sleep(2000)
         super.onCreate(savedInstanceState)
         setContent {
             KittyReaderTheme {

@@ -1,6 +1,7 @@
 package com.cutedomain.kittyreader.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -56,6 +57,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
+import com.cutedomain.kittyreader.screens.navigation.AppScreens
+import com.google.firebase.auth.FirebaseAuth
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -297,7 +300,11 @@ fun RegisterForm(navController: NavController){
                 val context=LocalContext.current
                 Button(
 
-                    onClick = { Toast.makeText(context,"App en construcción", Toast.LENGTH_SHORT).show() },
+                    onClick = { SignUp(
+                        email = email,
+                        pass = password,
+                        context = context,
+                        navController = navController) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.elevatedButtonColors(Color(0xFFFF5E94))
                 ) {
@@ -310,6 +317,24 @@ fun RegisterForm(navController: NavController){
     }
 
 }
+
+private fun SignUp(email: String, pass: String, context: Context, navController: NavController){
+    if (email.isNotEmpty() && pass.isNotEmpty()){
+        FirebaseAuth.getInstance().
+        createUserWithEmailAndPassword(email,pass).addOnCompleteListener{
+            if (it.isSuccessful) {
+                Toast.makeText(context, "Usuario creado con éxito", Toast.LENGTH_SHORT).show()
+                navController.navigate(AppScreens.LoginScreen.route)
+            } else {
+                ShowErr(context, "El usuario o contraseña son inválidos, vuelve a intentarlo.")
+            }
+        }
+    }
+    else{
+        ShowErr(context, "Los campos no pueden estar vacíos, por favor ingresa otra vez.")
+    }
+}
+
 
 @Preview
 @Composable
