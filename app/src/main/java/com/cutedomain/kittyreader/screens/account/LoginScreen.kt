@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.screens
+package com.cutedomain.kittyreader.screens.account
 
 
 import android.annotation.SuppressLint

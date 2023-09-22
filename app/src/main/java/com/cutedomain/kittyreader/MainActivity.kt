@@ -18,9 +18,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.cutedomain.kittyreader.screens.navigation.AppNavigation
 import com.cutedomain.kittyreader.ui.theme.KittyReaderTheme
-
 
 
 class MainActivity : ComponentActivity(){
@@ -29,25 +29,22 @@ class MainActivity : ComponentActivity(){
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
 
-       Thread.sleep(2000)
-        super.onCreate(savedInstanceState)
-        setContent {
-            KittyReaderTheme {
-                AppNavigation()
-            }
-        }
-            }
+
+       super.onCreate(savedInstanceState)
+       installSplashScreen()
+       // Full App
+       setContent {
+           KittyReaderTheme {
+               AppNavigation()
+           }
+       }
+       }
 
     @Preview
     @Composable
     private fun MainPreview(){
         AppNavigation()
     }
-
-
-
-
-
     }
 
 

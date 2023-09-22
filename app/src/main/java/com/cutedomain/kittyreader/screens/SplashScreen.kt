@@ -20,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,9 +53,11 @@ fun SplashScreen(alphaAnimation: Float){
             .background(colorResource(id = R.color.main_color)),
             contentAlignment = Alignment.Center
         ) {
-       Icon(modifier=Modifier.size(120.dp).alpha(alphaAnimation),imageVector = Icons.Default.LibraryBooks ,contentDescription = null, tint =Color(
-           0xFFFFFFFF
-       )
+       Icon(modifier= Modifier
+           .size(120.dp)
+           .alpha(alphaAnimation),
+           imageVector = Icons.Default.LibraryBooks ,
+           contentDescription = null, tint = colorResource(id = R.color.white)
        )
     }
 }

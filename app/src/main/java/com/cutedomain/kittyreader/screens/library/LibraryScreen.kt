@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.screens
+package com.cutedomain.kittyreader.screens.library
 
 import android.content.Context
 import android.widget.Toast
@@ -32,6 +32,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
@@ -62,12 +63,11 @@ import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
 import com.cutedomain.kittyreader.models.Book
 import com.cutedomain.kittyreader.models.DataProvider
+import com.cutedomain.kittyreader.models.items
 import kotlinx.coroutines.launch
 
 // Notes : Set LazyColumn into LibraryScreen function on Scaffold giving innerPadding parameter
 // Lista principal
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(navController: NavController){
@@ -86,7 +86,9 @@ fun LibraryScreen(navController: NavController){
     DismissibleNavigationDrawer(drawerContent = {
         DismissibleDrawerSheet {
             Column(
-                modifier=Modifier.fillMaxWidth().height(50.dp),
+                modifier= Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -133,7 +135,7 @@ fun LibraryScreen(navController: NavController){
             floatingActionButton = {
                 AddButton {
                     // Agregar un nuevo libro desde el sistema
-                    Toast.makeText(context, "Add a book", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(context, "Add a book", Toast.LENGTH_SHORT).show()
                 }
             }
         ) {
@@ -147,6 +149,8 @@ fun LibraryScreen(navController: NavController){
 // Lista de libros
 @Composable
 fun BookList(context: Context, books: List<Book>, innerPadding: PaddingValues) {
+
+
     Image(painter = painterResource(id = R.drawable.kittybanner),
         contentDescription = "Kitty Banner",
         modifier= Modifier
@@ -195,6 +199,9 @@ fun BookList(context: Context, books: List<Book>, innerPadding: PaddingValues) {
 @Composable
 fun BookCard(isbn: String, title: String, author: String, date: String, category: String, image: Int
 ) {
+    // All variables
+    // Book progress
+    val currentProgress by remember { mutableStateOf(0f) }
     Row {
         Column(
             modifier=Modifier.background(colorResource(id = R.color.white))
@@ -218,7 +225,6 @@ fun BookCard(isbn: String, title: String, author: String, date: String, category
                 .fillMaxSize()
         ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    // Mejorar a un contenedor con varios textos
                     Text(text = title, fontSize = 18.sp, style= TextStyle(color= colorResource(id = R.color.black)))
                     Text(
                         text = author,
@@ -227,9 +233,13 @@ fun BookCard(isbn: String, title: String, author: String, date: String, category
                         fontStyle = FontStyle.Italic
                     )
                     Box(
-                        modifier=Modifier.padding(PaddingValues(top=15.dp)),
+                        modifier=Modifier.padding(PaddingValues(top=25.dp)),
                         contentAlignment = Alignment.BottomStart){
-                        Text(text = "Progress bar here!")
+
+                        LinearProgressIndicator(
+                            modifier=Modifier.fillMaxWidth(),
+                            progress = currentProgress
+                        )
                     }
                   }
 
