@@ -12,8 +12,8 @@ android {
 
     defaultConfig {
         applicationId = "com.cutedomain.kittyreader"
-        minSdk = 23
-        targetSdk = 33
+        minSdk = 22
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -58,7 +58,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui:1.5.1")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
@@ -105,7 +105,12 @@ dependencies {
 
     // Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.0")
-
+    implementation ("com.github.FolioReader:FolioReader-Android:0.5.4")
+    implementation("androidx.multidex:multidex:2.0.1")
+    implementation("com.github.kittinunf.fuel:fuel:1.15.0")
+    //noinspection GradleCompatible
+    implementation ("com.android.support:appcompat-v7:28.0.0")
+    implementation("androidx.activity:activity-ktx:1.7.2")
 
 
 }

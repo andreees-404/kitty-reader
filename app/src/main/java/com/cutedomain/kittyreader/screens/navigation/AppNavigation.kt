@@ -18,7 +18,7 @@ import com.cutedomain.kittyreader.screens.library.LibraryScreen
 fun AppNavigation(){
     val navController=rememberNavController()
 
-    NavHost(navController =navController , startDestination = AppScreens.LibraryScreen.route){
+    NavHost(navController =navController , startDestination = AppScreens.IntentScreen.route){
         composable(route= AppScreens.LoginScreen.route){
             LoginScreen(navController)
         }

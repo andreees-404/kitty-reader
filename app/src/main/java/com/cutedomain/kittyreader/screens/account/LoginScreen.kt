@@ -62,9 +62,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
+import com.cutedomain.kittyreader.domain.controllers.UserController
 import com.cutedomain.kittyreader.screens.navigation.AppScreens
-import com.google.firebase.auth.FirebaseAuth
 
+
+private val controller: UserController= UserController()
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -193,7 +195,7 @@ fun LoginForm(navController: NavController){
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = { SignIn(
+                onClick = { controller.SignIn(
                     email = email,
                     pass= pass,
                     context = context,
@@ -295,20 +297,4 @@ fun ShowErr(context: Context, message: String) {
     builder.setPositiveButton("Aceptar", null)
     val dialog: AlertDialog = builder.create()
     dialog.show()
-}
-
-// Iniciar sesión
-// Migrar a un controlador
-private fun SignIn(email: String, pass: String, context: Context, navController: NavController){
-    if (email.isNotEmpty() && pass.isNotEmpty()){
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email,pass).
-        addOnCompleteListener{
-            if (it.isSuccessful){
-                navController.navigate(AppScreens.LibraryScreen.route)
-            }else ShowErr(context, "El usuario ingresado no es válido, vuelve a intentarlo.")
-        }
-    }
-    else{
-        ShowErr(context, "Los campos no pueden estar vacíos, por favor intenta otra vez.")
-    }
 }

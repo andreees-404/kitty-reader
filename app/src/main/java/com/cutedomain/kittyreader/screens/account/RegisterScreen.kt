@@ -1,8 +1,6 @@
 package com.cutedomain.kittyreader.screens.account
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -57,8 +55,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
-import com.cutedomain.kittyreader.screens.navigation.AppScreens
-import com.google.firebase.auth.FirebaseAuth
+import com.cutedomain.kittyreader.domain.controllers.UserController
+
+
+// private val userViewModel = viewModel { UserViewModel() }
+private val controller: UserController= UserController()
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -300,7 +301,7 @@ fun RegisterForm(navController: NavController){
                 val context=LocalContext.current
                 Button(
 
-                    onClick = { SignUp(
+                    onClick = { controller.SignUp(
                         email = email,
                         pass = password,
                         context = context,
@@ -317,7 +318,7 @@ fun RegisterForm(navController: NavController){
     }
 
 }
-
+/*
 private fun SignUp(email: String, pass: String, context: Context, navController: NavController){
     if (email.isNotEmpty() && pass.isNotEmpty()){
         FirebaseAuth.getInstance().
@@ -334,7 +335,7 @@ private fun SignUp(email: String, pass: String, context: Context, navController:
         ShowErr(context, "Los campos no pueden estar vacíos, por favor ingresa otra vez.")
     }
 }
-
+*/
 
 @Preview
 @Composable
