@@ -36,7 +36,10 @@ public class JavaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_java);
         Button button_open_book = findViewById(R.id.btn_read);
         button_open_book.setOnClickListener(view -> {
-            reader.readBook();
+            String book="file:///android_asset/El_libro_de_Enoc-Anonimo.epub";
+            FolioReader folioReader=FolioReader.get();
+
+            folioReader.openBook(book);
         });
     }
 

@@ -15,9 +15,12 @@ package com.cutedomain.kittyreader
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
@@ -28,23 +31,31 @@ import com.cutedomain.kittyreader.ui.theme.KittyReaderTheme
 class MainActivity : ComponentActivity(){
 
     // Request permissions
-    // private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
-        //isGranted -> val message = if (isGranted) "Permission Granteed" else "Permission Denied"
-      //  Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    //}
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+        isGranted -> val message = if (isGranted) "Permission Granteed" else "Permission Denied"
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
     //private val storagePermission=Manifest.permission.READ_EXTERNAL_STORAGE
-    val permissions= arrayOf(
-            Manifest.permission.MANAGE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    val permissions= if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO
         )
+    } else {
+        arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.INTERNET,
+            Manifest.permission.FOREGROUND_SERVICE
+        )
+    }
     val REQUEST_CODE=100
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
        super.onCreate(savedInstanceState)
-        //requestPermissionLauncher.launch(storagePermission)
         ActivityCompat.requestPermissions(
             this, permissions, PackageManager.PERMISSION_GRANTED)
        // Full App

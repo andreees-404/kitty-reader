@@ -25,5 +25,5 @@ val items=listOf<NavigationItem>(
     NavigationItem(title="Home", selectedIcon = Icons.Default.Home, unSelectedIcon = Icons.Outlined.Home, route=AppScreens.LibraryScreen.route),
     NavigationItem(title="Books", selectedIcon = Icons.Default.Book, unSelectedIcon = Icons.Outlined.Book, route =AppScreens.LibraryScreen.route),
     NavigationItem(title="Login", selectedIcon = Icons.Default.Person, unSelectedIcon = Icons.Outlined.Person, route =AppScreens.LoginScreen.route),
-    NavigationItem(title="Read", selectedIcon = Icons.Default.ChromeReaderMode, unSelectedIcon = Icons.Outlined.ChromeReaderMode, route =AppScreens.BookScreen.route)
+    NavigationItem(title="Read", selectedIcon = Icons.Default.ChromeReaderMode, unSelectedIcon = Icons.Outlined.ChromeReaderMode, route =AppScreens.IntentScreen.route)
 )
