@@ -1,5 +1,6 @@
 package com.cutedomain.kittyreader.screens.library
 
+// import com.cutedomain.kittyreader.domain.controllers.ReaderController
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -61,7 +62,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
-import com.cutedomain.kittyreader.domain.controllers.ReaderController
 import com.cutedomain.kittyreader.models.Book
 import com.cutedomain.kittyreader.models.DataProvider
 import com.cutedomain.kittyreader.models.items
@@ -69,6 +69,7 @@ import kotlinx.coroutines.launch
 
 // Notes : Set LazyColumn into LibraryScreen function on Scaffold giving innerPadding parameter
 // Lista principal
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(navController: NavController){
@@ -76,7 +77,7 @@ fun LibraryScreen(navController: NavController){
     val context = LocalContext.current
 
     // Reader
-    val reader=ReaderController(context)
+    // val reader=ReaderController(context)
     // Scafold state -> Migration from ScaffoldState
     val snackbarHostState = remember { SnackbarHostState()}
     // Escupo
@@ -138,7 +139,7 @@ fun LibraryScreen(navController: NavController){
             floatingActionButton = {
                 AddButton {
                     // Agregar un nuevo libro desde el sistema
-                    // Toast.makeText(context, "Add a book", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Add a book", Toast.LENGTH_SHORT).show()
                 }
             }
         ) {
@@ -152,7 +153,7 @@ fun LibraryScreen(navController: NavController){
 // Lista de libros
 @Composable
 fun BookList(context: Context, books: List<Book>, innerPadding: PaddingValues) {
-    val reader=ReaderController(context)
+    // val reader=ReaderController(context)
 
     Image(painter = painterResource(id = R.drawable.kittybanner),
         contentDescription = "Kitty Banner",
@@ -172,11 +173,10 @@ fun BookList(context: Context, books: List<Book>, innerPadding: PaddingValues) {
                         .padding(8.dp)
                         .wrapContentHeight()
                         .clickable {
-                            Toast.makeText(context, "Click en card ${bookItem.isbn}", Toast.LENGTH_SHORT).show()
-
-                            // Abrir el libro
-
-                        } ,
+                            Toast.makeText(
+                                    context,
+                                    "Click en card ${bookItem.isbn}",
+                                    Toast.LENGTH_SHORT).show() },
                     colors=CardDefaults.cardColors(colorResource(id = R.color.card_description)),
                     elevation = CardDefaults.cardElevation(8.dp)
                 ) {

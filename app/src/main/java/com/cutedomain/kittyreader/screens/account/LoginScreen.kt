@@ -11,13 +11,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Email
@@ -105,9 +106,9 @@ fun LoginForm(navController: NavController){
     val context= LocalContext.current
     Column(
         modifier= Modifier
-            .fillMaxSize()
+            .fillMaxHeight()
             .background(Color(0xFFFFFFFF)),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
         ) {
         // Variable email
@@ -121,9 +122,10 @@ fun LoginForm(navController: NavController){
         // Todo el contenido en una columnas
         Column(
             modifier = Modifier
-                .fillMaxHeight()
                 .padding(20.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         )
@@ -239,7 +241,7 @@ fun LoginForm(navController: NavController){
                 colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(PaddingValues(start = 50.dp, end = 50.dp,bottom=10.dp)),
+                    .padding(PaddingValues(start = 50.dp, end = 50.dp, bottom = 10.dp)),
                 shape = RoundedCornerShape(50)
                 ){
                 Image(painter = painterResource(id = R.drawable.google),
@@ -269,8 +271,20 @@ fun LoginForm(navController: NavController){
             }
         }
 
+        Button(
+            colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.grey)),
+            onClick = { navController.navigate(AppScreens.LibraryScreen.route) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(PaddingValues(start = 10.dp, end = 10.dp, bottom = 10.dp))
+        ) {
+            Text(text = "Continuar sin Iniciar sesión", style = TextStyle(color = colorResource(id = R.color.white
+            )))
+        }
     }
-}
+
+    }
+
 
 private fun SignInGoogle() {
 

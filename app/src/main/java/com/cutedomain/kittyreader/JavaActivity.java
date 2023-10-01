@@ -12,20 +12,28 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.cutedomain.kittyreader.domain.controllers.FileHandler;
-import com.cutedomain.kittyreader.domain.controllers.ReaderController;
-import com.folioreader.FolioReader;
+// import com.cutedomain.kittyreader.domain.controllers.ReaderController;
+
+import org.w3c.dom.Text;
+
+import java.util.Locale;
 
 public class JavaActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 100;
-    ReaderController reader=new ReaderController(this);
+    // ReaderController reader=new ReaderController(this);
+    private TextToSpeech tts;
     int REQUEST_CODE = 100;
+
 
     // for this activity, declare <style> tag App.Compat
     // in the Android Manifest File
@@ -34,12 +42,10 @@ public class JavaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_java);
+
         Button button_open_book = findViewById(R.id.btn_read);
         button_open_book.setOnClickListener(view -> {
-            String book="file:///android_asset/El_libro_de_Enoc-Anonimo.epub";
-            FolioReader folioReader=FolioReader.get();
-
-            folioReader.openBook(book);
+            //reader.readBook("El_libro_de_Enoc-Anonimo.epub");
         });
     }
 
@@ -51,7 +57,7 @@ public class JavaActivity extends AppCompatActivity {
     public void fileSearch() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("document/*");
+        intent.setType("pdf/*");
         startActivity(intent);
     }
 

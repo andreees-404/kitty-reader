@@ -105,12 +105,18 @@ dependencies {
 
     // Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.0")
-    implementation ("com.github.FolioReader:FolioReader-Android:0.5.4")
+
+    // PDF Viewer
+    implementation ("com.github.barteksc:android-pdf-viewer:2.8.2")
+
+    // Dependencias necesarias para FolioReader
     implementation("androidx.multidex:multidex:2.0.1")
     implementation("com.github.kittinunf.fuel:fuel:1.15.0")
     //noinspection GradleCompatible
     implementation ("com.android.support:appcompat-v7:28.0.0")
     implementation("androidx.activity:activity-ktx:1.7.2")
 
+    // Epub Reader
+    implementation ("com.github.FolioReader:FolioReader-Android:0.5.4")
 
 }

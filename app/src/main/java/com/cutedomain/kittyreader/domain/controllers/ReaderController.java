@@ -13,17 +13,12 @@ import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 
-import com.cutedomain.kittyreader.R;
-import com.folioreader.Config;
-import com.folioreader.FolioReader;
-import com.folioreader.mediaoverlay.MediaController;
-import com.folioreader.ui.activity.FolioActivity;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.nio.charset.StandardCharsets;
+/*
 public class ReaderController {
     private Context context;
     private TextToSpeech tts;
@@ -39,32 +34,59 @@ public class ReaderController {
     public ReaderController(Context con){
         this.context=con;
         }
-    public void readBook() {
+    public void readBook(String filename) {
         AssetManager assetManager = context.getAssets();
         try {
-            InputStream epubInputStream = assetManager.open("El_libro_de_Enoc-Anonimo.epub");
+            InputStream epubInputStream = assetManager.open(filename);
             File epubFile=createTempFile(epubInputStream);
-            reader.openBook(epubFile.getAbsolutePath());
+            String name=epubFile.getName();
+            config=readerConfig();
+            System.out.println(name);
+            reader.openBook("file:///android_assset/El_libro_de_Enoc-Anonimo.epub");
         } catch (IOException exception) {
             exception.printStackTrace();
         }
     }
 
-    public void readerConfig() {
-
+    public Config readerConfig() {
+        config=new Config();
+        config.setShowTts(false);
+        config.setNightMode(true);
+        config.setFontSize(20);
+        return config;
     }
+
+    // Ver el contenido de un archivo
+    public String readContent(Context context, String filename){
+        AssetManager assetManager=context.getAssets();
+        try {
+            InputStream inputStream=assetManager.open(filename);
+            byte[] buffer=new byte[inputStream.available()];
+            inputStream.read(buffer);
+            System.out.println("Contenido cargado");
+            // Convertirlo en una cadena de texto
+            return new String(buffer, StandardCharsets.UTF_8);
+        }catch (IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
 
     // Convertir el archivo en uno temporal con una ruta válida
     private File createTempFile(InputStream inputStream) throws IOException{
-        File tmp=File.createTempFile("epub_tmp", ".epub");
+        File tmp=File.createTempFile("epub_tmp", ".epub", context.getCacheDir());
         tmp.deleteOnExit();
         try (FileOutputStream outputStream=new FileOutputStream(tmp)){
             byte[] buffer= new byte[1024];
             int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1){
+            while ((bytesRead = inputStream.read(buffer)) > 0 ){
                 outputStream.write(buffer, 0, bytesRead);
             }
+
+            outputStream.close();
         }
+        inputStream.close();
         return tmp;
     }
 
@@ -86,3 +108,4 @@ public class ReaderController {
 
 
 }
+*/
