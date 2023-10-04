@@ -14,12 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -43,12 +42,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,37 +59,35 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
 import com.cutedomain.kittyreader.domain.controllers.UserController
+import com.cutedomain.kittyreader.screens.navigation.AppScreens
+
+
+// Este archivo contiene la
+// vista de registro de usuarios
 
 
 // private val userViewModel = viewModel { UserViewModel() }
-private val controller: UserController= UserController()
+private val controller: UserController= UserController() // -> Manejo de usuarios
+private var passwordMessage: String = "La contraseña cumple los requisitos"
+private var isValidEmail: String = "El email es válido"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(navController: NavController) {
-    Scaffold(
-
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(id = R.string.app_name),
-                            style = TextStyle(
-                                color = Color(0xFFFFFFFF),
-                                fontSize = 24.sp
-                            )
-                        )
-                    },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color(0xFFFF72A2)),
-                    navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back to login", tint = Color(0xFFFFFFFF))
+    Scaffold( topBar = {
+        TopAppBar( title = {
+            Text( text = stringResource(id = R.string.app_name), style = TextStyle(color = Color(0xFFFFFFFF), fontSize = 24.sp)) },
+            colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color(0xFFFF72A2)),
+            navigationIcon = {
+                IconButton(onClick = { navController.navigate(AppScreens.LoginScreen.route) }) {
+                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back to login", tint = Color(0xFFFFFFFF))
                         }
                     }
                 )
             }
     ) {
+        // Content
         RegisterForm(navController)
     }
 }
@@ -94,6 +95,20 @@ fun RegisterScreen(navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterForm(navController: NavController){
+    val linkInicioSesion = buildAnnotatedString {
+        withStyle(style= SpanStyle(color=Color(0xFF111111) )){
+            append("¿Ya tienes una cuenta?, ")
+        }
+        pushStringAnnotation(
+            "register",
+            annotation = "https://google.com"
+        )
+        withStyle(style = SpanStyle(color=Color(0xFFFF72A2))) {
+            append("Inicia sesión")
+        }
+        // What does the function
+        pop()
+    }
     Column(
         modifier= Modifier
             .fillMaxSize()
@@ -115,11 +130,25 @@ fun RegisterForm(navController: NavController){
             mutableStateOf("")
         }
 
-        // Password
+        // 1st Password
         var password by rememberSaveable {
             mutableStateOf("")
         }
 
+        // 2nd Password value
+        var confirmPassword by remember {
+            mutableStateOf("")
+        }
+
+        // toggle password
+        var visiblePass by rememberSaveable {
+            mutableStateOf(false)
+        }
+
+        // CheckBox is selected
+        var selected by rememberSaveable {
+            mutableStateOf(false)
+        }
         // Main column
         Column(
             modifier = Modifier
@@ -137,86 +166,57 @@ fun RegisterForm(navController: NavController){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Column {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
-                    text = "Regístrate",
-                    style = TextStyle(fontSize = 26.sp),
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFFF95BA)
-                )
-
+                    text = "Regístrate", style = TextStyle(fontSize = 26.sp), fontWeight = FontWeight.Bold, color = Color(0xFFFF95BA))
                 Spacer(modifier = Modifier.height(20.dp))
+
+                // Create a user profile
+                // ----------------
 
                 // Name input
                 TextField(
-                    value = firstName, onValueChange = {
-                        firstName = it
-                    },
-                    label = {
-                        Text(
-                            text = "First name",
-                            style = TextStyle.Default.copy(fontSize = 14.sp)
-                        )
-                    },
-                    modifier = Modifier.padding(PaddingValues(bottom = 20.dp))
-                )
+                    value = firstName, onValueChange = { firstName = it },
+                    label = { Text( text = "First name", style = TextStyle.Default.copy(fontSize = 14.sp)) },
+                    modifier = Modifier.padding(PaddingValues(bottom = 20.dp)),
+                    singleLine = true)
 
                 // Last name input
                 TextField(
-                    value = lastName, onValueChange = {
-                        lastName = it
-                    },
-                    label = {
-                        Text(
-                            text = "Last name",
-                            style = TextStyle.Default.copy(fontSize = 14.sp)
-                        )
-                    },
-                    modifier = Modifier.padding(PaddingValues(bottom = 20.dp))
-                )
+                    value = lastName, onValueChange = { lastName = it },
+                    label = { Text( text = "Last name", style = TextStyle.Default.copy(fontSize = 14.sp)) },
+                    modifier = Modifier.padding(PaddingValues(bottom = 20.dp)),
+                    singleLine = true)
 
 
                 // Email input
+                // -----------
                 TextField(value = email, onValueChange = {
                     email = it
-                },
-                    label = {
-                        Text(
-                            text = "Email",
-                            style = TextStyle.Default.copy(fontSize = 14.sp)
-                        )
-                    },
-                    modifier = Modifier.padding(PaddingValues(bottom = 50.dp)),
-                    leadingIcon = {
-                        val userIcon = Icons.Filled.Mail
-                        val desc = "user icon"
-                        Icon(imageVector = userIcon, contentDescription = desc)
-                        }
-                )
+                    if (controller.verifyEmail(email)){
+                        isValidEmail=""
+                    } else { isValidEmail="* El email introducido no cumple con los requisitos."}},
+                    label = { Text( text = "Email", style = TextStyle.Default.copy(fontSize = 14.sp)) },
+                    singleLine = true,)
 
-                // toggle password
-                var visiblePass by rememberSaveable {
-                    mutableStateOf(false)
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.padding(PaddingValues(top=10.dp)).fillMaxWidth()
+                ) {
+                    Text(text = isValidEmail, style = TextStyle(color = colorResource(id = R.color.red)), modifier = Modifier.padding(PaddingValues(bottom = 30.dp, start = 20.dp)))
                 }
 
+                Text("Crea una contraseña", fontSize = 20.sp, fontWeight = FontWeight.Bold, style = TextStyle(color= Color(0xFFFF95BA)))
 
-                Text(
-                    "Crea una contraseña",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(color= Color(0xFFFF95BA))
-                )
-                // Password input
-                TextField(value = password, onValueChange = {
-                    password = it
-                },
-                    label = {
-                        Text(
-                            text = "Password",
-                            style = TextStyle.Default.copy(fontSize = 14.sp)
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+
+                // Create password
+                // ---------------
+                TextField(value = password, onValueChange = { password = it
+                    controller.checkPass(password, confirmPassword)},
+                    label = { Text( text = "Password", style = TextStyle.Default.copy(fontSize = 14.sp))
+                    }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     singleLine = true,
                     modifier = Modifier.padding(PaddingValues(top = 20.dp, bottom = 10.dp)),
                     visualTransformation = if (visiblePass) VisualTransformation.None else PasswordVisualTransformation(),
@@ -226,59 +226,32 @@ fun RegisterForm(navController: NavController){
                         } else {
                             Icons.Filled.VisibilityOff
                         }
-                        // visible
+
+                        // visible password
                         val description = if (visiblePass) "Hide password" else "Show password"
                         IconButton(onClick = { visiblePass = !visiblePass }) {
-                            Icon(imageVector = icon, description)
-                        }
-                    },
-                    leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Lock,
-                                contentDescription = "Password icon"
-                            )
-                    }
-                )
+                            Icon(imageVector = icon, description) }
+                    })
 
-
-                var confirmPassword by remember {
-                    mutableStateOf("")
-                }
                 // Confirm password
+                // ----------------
                 TextField(value = confirmPassword, onValueChange = {
                     confirmPassword = it
-
-                },
-                    label = {
-                        Text(
-                            text = "Confirm Password",
-                            style = TextStyle.Default.copy(fontSize = 14.sp)
-                        )
-                    },
+                    if (!controller.checkPass(password, confirmPassword)){
+                        passwordMessage = "* Las contraseñas no coinciden"
+                    } else { passwordMessage = "" }},
+                    label = { Text( text = "Confirm Password", style = TextStyle.Default.copy(fontSize = 14.sp)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     singleLine = true,
                     modifier = Modifier.padding(PaddingValues(top = 20.dp)),
-                    visualTransformation = if (visiblePass) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        val confirmIcon = if (visiblePass) {
-                            Icons.Filled.Visibility
-                        } else {
-                            Icons.Filled.VisibilityOff
-                        }
-                        // visible
-                        val confirmDescription =
-                            if (visiblePass) "Hide password" else "Show password"
-                        IconButton(onClick = { visiblePass = !visiblePass }) {
-                            Icon(imageVector = confirmIcon, confirmDescription)
-                        }
-                    }
-                )
+                    visualTransformation = if (visiblePass) VisualTransformation.None else PasswordVisualTransformation())
+
+                Text(modifier = Modifier.padding(PaddingValues(top = 10.dp, start = 20.dp)).fillMaxWidth(),text = passwordMessage, style = TextStyle(color= colorResource(id = R.color.red)))
+                // Validar que coinciden las contraseñas
+
 
                 // Privacy policy and condition terms
-                // ----------------------------------------------------------
-                var selected by rememberSaveable {
-                    mutableStateOf(false)
-                }
+                // ----------------------------------
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -289,7 +262,7 @@ fun RegisterForm(navController: NavController){
                         Checkbox(checked = selected, onCheckedChange = { selected = it })
                         Spacer(modifier = Modifier.width(5.dp))
                         Text(
-                            text = "Acepto todos los términos y condiciones de privacidad.",
+                            text = stringResource(id = R.string.termString),
                             fontWeight = FontWeight.Bold,
                             fontSize = 12.sp,
                             color = Color.Black,
@@ -300,42 +273,35 @@ fun RegisterForm(navController: NavController){
                 // ----------------------------------------------------------
                 val context=LocalContext.current
                 Button(
-
-                    onClick = { controller.SignUp(
+                    onClick = { val isUp = controller.SignUp(
                         email = email,
                         pass = password,
                         context = context,
-                        navController = navController) },
+                        conditionalTerms = selected )
+                        // EValuar si se hizo el registro
+                        if (isUp){
+                            navController.navigate(AppScreens.LibraryScreen.route)
+                        } else {
+
+                        }},
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.elevatedButtonColors(Color(0xFFFF5E94))
                 ) {
-                    Text(text = "Enviar", style = TextStyle(color = Color(0xFFFFFFFF)))
+                    Text(text = stringResource(id = R.string.send), style = TextStyle(color = Color(0xFFFFFFFF)))
                 }
-
+                ClickableText(
+                    text = linkInicioSesion,
+                    onClick = {
+                        navController.navigate(AppScreens.LoginScreen.route)
+                    },
+                    modifier= Modifier.padding(PaddingValues(top=20.dp))
+                )
             }
         }
 
     }
 
 }
-/*
-private fun SignUp(email: String, pass: String, context: Context, navController: NavController){
-    if (email.isNotEmpty() && pass.isNotEmpty()){
-        FirebaseAuth.getInstance().
-        createUserWithEmailAndPassword(email,pass).addOnCompleteListener{
-            if (it.isSuccessful) {
-                Toast.makeText(context, "Usuario creado con éxito", Toast.LENGTH_SHORT).show()
-                navController.navigate(AppScreens.LoginScreen.route)
-            } else {
-                ShowErr(context, "El usuario o contraseña son inválidos, vuelve a intentarlo.")
-            }
-        }
-    }
-    else{
-        ShowErr(context, "Los campos no pueden estar vacíos, por favor ingresa otra vez.")
-    }
-}
-*/
 
 @Preview
 @Composable

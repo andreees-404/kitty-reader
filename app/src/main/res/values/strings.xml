@@ -2,5 +2,7 @@
     <string name="app_name">KittyReader</string>
     <string name="title_activity_library">Library</string>
     <string name="title_activity_register">register</string>
-
+    <string name="termString">Acepto el acuerdo de términos y condiciones de uso.</string>
+    <string name="send">Enviar</string>
+    <string name="signUpError">Ha sucedido un error al crear su cuenta.</string>
 </resources>

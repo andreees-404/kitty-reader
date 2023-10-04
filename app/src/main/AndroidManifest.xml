@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -21,12 +22,13 @@
         android:theme="@style/Theme.KittyReader.SplashScreen"
         tools:targetApi="31">
         <activity
-            android:name=".JavaActivity"
+            android:name=".EpubActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PdfActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light"
-            android:label="KittyReader">
-
-        </activity>
+            android:label="KittyReader"
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -41,9 +43,9 @@
         <activity
             android:name="com.folioreader.ui.activity.SearchActivity"
             android:exported="true">
+
             <!-- Otras configuraciones de actividad -->
         </activity>
-
     </application>
 
 </manifest>

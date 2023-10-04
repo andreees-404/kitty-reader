@@ -20,7 +20,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
@@ -77,17 +77,12 @@ fun LoginScreen(navController: NavController){
             TopAppBar(title = {
                 Text(
                     text = stringResource(id = R.string.app_name),
-                    style = TextStyle(
-                        color = Color(0xFFFFFFFF),
-                        fontSize = 24.sp
-                    ),
-
-                    )
+                    style = TextStyle(color = Color(0xFFFFFFFF), fontSize = 24.sp),)
             }, colors = TopAppBarDefaults.smallTopAppBarColors(containerColor=Color(0xFFFF72A2)
             ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(AppScreens.LibraryScreen.route) }) {
-                       Icon(imageVector = Icons.Filled.Book,
+                       Icon(imageVector = Icons.Filled.ArrowBack,
                            contentDescription = "Go to library",
                            tint= colorResource(id = R.color.white))
                     }
@@ -103,7 +98,7 @@ fun LoginScreen(navController: NavController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginForm(navController: NavController){
-    val context= LocalContext.current
+    val context = LocalContext.current
     Column(
         modifier= Modifier
             .fillMaxHeight()
@@ -197,18 +192,21 @@ fun LoginForm(navController: NavController){
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = { controller.SignIn(
+                onClick = { val auth = controller.SignIn(
                     email = email,
                     pass= pass,
-                    context = context,
-                    navController = navController) },
+                    context = context)
+                    if(auth){
+                        navController.navigate(AppScreens.LibraryScreen.route)
+                    }},
                 contentPadding = PaddingValues(
                     start = 20.dp,
                     top = 12.dp,
                     end = 20.dp,
                     bottom = 12.dp
                 ),
-                colors = ButtonDefaults.elevatedButtonColors(containerColor= colorResource(id = R.color.main_color))
+                colors = ButtonDefaults.elevatedButtonColors(containerColor= colorResource(id = R.color.main_color)),
+                modifier = Modifier.fillMaxWidth().padding(PaddingValues(start=25.dp,end=25.dp))
             ) {
                 Text(text = "Iniciar Sesión",style= TextStyle(color= colorResource(id = R.color.white)))
             }
@@ -237,7 +235,7 @@ fun LoginForm(navController: NavController){
             )
 
             // Iniciar sesión con Google
-            OutlinedButton(onClick = { SignInGoogle() },
+            OutlinedButton(onClick = { controller.SignInGoogle() },
                 colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -253,7 +251,7 @@ fun LoginForm(navController: NavController){
             }
 
             // Iniciar sesión con Facebook
-            OutlinedButton(onClick = { SignInFacebook() },
+            OutlinedButton(onClick = { controller.SignInFacebook() },
                 colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -278,21 +276,12 @@ fun LoginForm(navController: NavController){
                 .fillMaxWidth()
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, bottom = 10.dp))
         ) {
-            Text(text = "Continuar sin Iniciar sesión", style = TextStyle(color = colorResource(id = R.color.white
+            Text(text = "Continuar sin iniciar sesión", style = TextStyle(color = colorResource(id = R.color.white
             )))
         }
     }
 
     }
-
-
-private fun SignInGoogle() {
-
-}
-
-private fun SignInFacebook() {
-
-}
 
 @Composable
 @Preview

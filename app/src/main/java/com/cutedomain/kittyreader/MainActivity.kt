@@ -55,12 +55,11 @@ class MainActivity : ComponentActivity(){
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
-       super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
         ActivityCompat.requestPermissions(
             this, permissions, PackageManager.PERMISSION_GRANTED)
-       // Full App
+
+        // Full App
         installSplashScreen()
        setContent {
            KittyReaderTheme {
@@ -76,6 +75,8 @@ class MainActivity : ComponentActivity(){
         AppNavigation()
     }
     }
+
+
 
 
 

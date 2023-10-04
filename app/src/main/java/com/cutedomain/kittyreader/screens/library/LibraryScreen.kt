@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
+import com.cutedomain.kittyreader.domain.controllers.FileHandler
 import com.cutedomain.kittyreader.models.Book
 import com.cutedomain.kittyreader.models.DataProvider
 import com.cutedomain.kittyreader.models.items
@@ -77,7 +78,7 @@ fun LibraryScreen(navController: NavController){
     val context = LocalContext.current
 
     // Reader
-    // val reader=ReaderController(context)
+    val reader = FileHandler()
     // Scafold state -> Migration from ScaffoldState
     val snackbarHostState = remember { SnackbarHostState()}
     // Escupo
@@ -139,7 +140,9 @@ fun LibraryScreen(navController: NavController){
             floatingActionButton = {
                 AddButton {
                     // Agregar un nuevo libro desde el sistema
-                    Toast.makeText(context, "Add a book", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Opening book", Toast.LENGTH_SHORT).show()
+                    reader.openPdf(context)
+
                 }
             }
         ) {

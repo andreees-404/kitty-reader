@@ -41,6 +41,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -118,5 +119,14 @@ dependencies {
 
     // Epub Reader
     implementation ("com.github.FolioReader:FolioReader-Android:0.5.4")
+    implementation("com.google.firebase:firebase-storage-ktx")
+
+    // Google OAuth
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.facebook.android:facebook-android-sdk:[4,5)")
+
+    // PDF Viewer
+    implementation ("com.github.barteksc:android-pdf-viewer:2.8.2")
+
 
 }
