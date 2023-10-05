@@ -4,8 +4,6 @@ import android.content.Context
 import android.widget.Toast
 import com.cutedomain.kittyreader.screens.account.ShowErr
 import com.google.firebase.auth.FirebaseAuth
-import com.facebook.FacebookSdk
-import com.facebook.appevents.AppEventsLogger
 
 class UserController {
 
@@ -88,6 +86,7 @@ class UserController {
 
     // Login con Facebook
     internal fun SignInFacebook() {
+        // Instancia de Firebase
 
     }
 

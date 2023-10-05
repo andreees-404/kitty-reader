@@ -5,4 +5,7 @@
     <string name="termString">Acepto el acuerdo de términos y condiciones de uso.</string>
     <string name="send">Enviar</string>
     <string name="signUpError">Ha sucedido un error al crear su cuenta.</string>
+    <string name="facebook_app_id">1234</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">56789</string>
 </resources>

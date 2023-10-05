@@ -29,9 +29,7 @@ class PdfActivity : AppCompatActivity() {
                     uri?.let {
                         binding.pdfView.fromUri(it).onError {
                          error -> println("Ha sucedido un error: $error")
-
                         }.load()
-
                     }
                 } else {
                     println("!El usuario no ha seleccionado ningún archivo...")
@@ -42,6 +40,8 @@ class PdfActivity : AppCompatActivity() {
             launcher.launch("application/pdf")
         } catch (e: Exception){
             e.printStackTrace()
+            reader.noSuchFile(this)
+            finish()
         }
     }
 }

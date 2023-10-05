@@ -53,6 +53,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.10.1")
@@ -126,7 +127,10 @@ dependencies {
     implementation("com.facebook.android:facebook-android-sdk:[4,5)")
 
     // PDF Viewer
-    implementation ("com.github.barteksc:android-pdf-viewer:2.8.2")
+    implementation("com.github.barteksc:android-pdf-viewer:2.8.2")
+
+    // Courutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 
 
 }

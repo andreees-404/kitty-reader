@@ -76,7 +76,6 @@ import kotlinx.coroutines.launch
 fun LibraryScreen(navController: NavController){
     // Local context
     val context = LocalContext.current
-
     // Reader
     val reader = FileHandler()
     // Scafold state -> Migration from ScaffoldState
@@ -141,7 +140,7 @@ fun LibraryScreen(navController: NavController){
                 AddButton {
                     // Agregar un nuevo libro desde el sistema
                     Toast.makeText(context, "Opening book", Toast.LENGTH_SHORT).show()
-                    reader.openPdf(context)
+                    reader.openEpub(context)
 
                 }
             }

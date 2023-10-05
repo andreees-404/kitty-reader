@@ -27,6 +27,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.cutedomain.kittyreader.screens.navigation.AppNavigation
 import com.cutedomain.kittyreader.ui.theme.KittyReaderTheme
+import com.facebook.FacebookSdk
+import com.facebook.appevents.AppEventsLogger
 
 class MainActivity : ComponentActivity(){
 
@@ -56,6 +58,10 @@ class MainActivity : ComponentActivity(){
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Iniciar el SDK de Facebook
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
         ActivityCompat.requestPermissions(
             this, permissions, PackageManager.PERMISSION_GRANTED)
 

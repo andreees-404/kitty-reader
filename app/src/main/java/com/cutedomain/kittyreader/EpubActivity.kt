@@ -22,8 +22,9 @@ class EpubActivity : AppCompatActivity() {
             val launcher = registerForActivityResult(ActivityResultContracts.GetContent()){
                 uri -> if (uri != null){
                 uri.let {
-                    val path = uri.toString()
+                    val path = uri.path.toString()
                     openEpub(path)
+                    println("Se ha abierto el archivo correctamente??")
                 }
                 }else{
                     println("!El usuario no ha seleccionado ningún archivo EPUB...")
@@ -31,7 +32,7 @@ class EpubActivity : AppCompatActivity() {
             }
 
             // Abrir el archivo
-            launcher.launch("application/epub")
+            launcher.launch("application/*")
 
         } catch (e: Exception) {
             controller.noSuchFile(this)
@@ -41,7 +42,12 @@ class EpubActivity : AppCompatActivity() {
 
     private fun openEpub(path: String) {
         if (File(path).exists()){
+            // El archivo existe
+            println(path)
             folioReader.openBook(path)
+
+        }else {
+            println("La ruta es inválida $path")
         }
     }
 
