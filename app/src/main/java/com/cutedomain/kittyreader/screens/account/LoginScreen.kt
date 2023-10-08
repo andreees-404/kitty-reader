@@ -63,10 +63,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
+import com.cutedomain.kittyreader.domain.AuthActivity
 import com.cutedomain.kittyreader.domain.controllers.UserController
 import com.cutedomain.kittyreader.screens.navigation.AppScreens
 
-
+private val auth = AuthActivity()
 private val controller: UserController= UserController()
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -160,7 +161,9 @@ fun LoginForm(navController: NavController){
             // Password
             TextField(
                 value = pass,
-                onValueChange = { pass = it },
+                onValueChange = {
+                    pass = it
+                    controller.validatePass(pass = pass)},
                 label = {
                     Text(
                         "Password",
@@ -192,11 +195,11 @@ fun LoginForm(navController: NavController){
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = { val auth = controller.SignIn(
+                onClick = { val validator = controller.SignIn(
                     email = email,
                     pass= pass,
                     context = context)
-                    if(auth){
+                    if(validator){
                         navController.navigate(AppScreens.LibraryScreen.route)
                     }},
                 contentPadding = PaddingValues(
@@ -206,7 +209,9 @@ fun LoginForm(navController: NavController){
                     bottom = 12.dp
                 ),
                 colors = ButtonDefaults.elevatedButtonColors(containerColor= colorResource(id = R.color.main_color)),
-                modifier = Modifier.fillMaxWidth().padding(PaddingValues(start=25.dp,end=25.dp))
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(PaddingValues(start = 25.dp, end = 25.dp))
             ) {
                 Text(text = "Iniciar Sesión",style= TextStyle(color= colorResource(id = R.color.white)))
             }
@@ -251,7 +256,7 @@ fun LoginForm(navController: NavController){
             }
 
             // Iniciar sesión con Facebook
-            OutlinedButton(onClick = { controller.SignInFacebook() },
+            OutlinedButton(onClick = { auth.FabebookSignIn() },
                 colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -289,7 +294,6 @@ fun RegisterPreview(){
     LoginScreen(navController = rememberNavController())
 }
 
-// Logics
 
 
 // Mostrar diálogo de error

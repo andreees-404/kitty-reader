@@ -8,7 +8,7 @@ import com.cutedomain.kittyreader.PdfActivity
 import com.folioreader.FolioReader
 
 class FileHandler {
-
+    // Pendiente : Arreglar problema al abrir arhivo epub
     private val folioreader = FolioReader.get()
     internal fun openPdf(context: Context){
         val intent = Intent(context, PdfActivity::class.java).also {

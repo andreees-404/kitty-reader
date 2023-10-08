@@ -2,7 +2,9 @@ package com.cutedomain.kittyreader.domain.controllers
 
 import android.content.Context
 import android.widget.Toast
+import com.cutedomain.kittyreader.domain.AuthActivity
 import com.cutedomain.kittyreader.screens.account.ShowErr
+import com.facebook.CallbackManager
 import com.google.firebase.auth.FirebaseAuth
 
 class UserController {
@@ -18,7 +20,8 @@ class UserController {
     * @args ViewModel userViewModel
     *
     * */
-
+    private val auth = AuthActivity()
+    private val callback = CallbackManager.Factory.create()
 
     // Función para iniciar sesión con email
     internal fun SignIn(
@@ -78,21 +81,20 @@ class UserController {
         return regex.matches(email)
     }
     internal fun checkPass(pass: String, chkPass: String) : Boolean{
-        if (!pass.equals(chkPass) || ( pass.length > 8 || chkPass.length > 8)){
-            return false
-        }
-        return true
+        return !(!pass.equals(chkPass) || ( pass.length > 8 || chkPass.length > 8) || ( pass.isEmpty() || chkPass.isEmpty()))
     }
 
     // Login con Facebook
     internal fun SignInFacebook() {
-        // Instancia de Firebase
-
+        auth.FabebookSignIn()
     }
 
     // Login con Google
     internal fun SignInGoogle() {
 
+    }
+    internal fun validatePass(pass: String): Boolean {
+        return !(pass.length > 8 || pass.isEmpty())
     }
 
 
