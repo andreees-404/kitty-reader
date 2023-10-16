@@ -15,7 +15,7 @@ class AuthActivity : AppCompatActivity() {
 
     private val callbackManager = CallbackManager.Factory.create()
     private val GOOGLE_SIGN_IN = 100
-
+    private val TAG = "AUTH_ACTIVITY"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

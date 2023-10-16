@@ -13,23 +13,20 @@ import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 
+import com.folioreader.Config;
+import com.folioreader.FolioReader;
+import com.folioreader.mediaoverlay.MediaController;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-/*
+
 public class ReaderController {
     private Context context;
     private TextToSpeech tts;
-    // public int _id=context.getResources().getIdentifier("El_libro_de_Enoc-Anonimo", "raw", context.getPackageName());
-    // En esta clase se definirán todos los métodos
-    // con los que manejaremos los archivos de los libros
 
-    FolioReader reader=FolioReader.get();
-    Config config;
-
-    MediaController mediaController;
 
     public ReaderController(Context con){
         this.context=con;
@@ -40,21 +37,13 @@ public class ReaderController {
             InputStream epubInputStream = assetManager.open(filename);
             File epubFile=createTempFile(epubInputStream);
             String name=epubFile.getName();
-            config=readerConfig();
             System.out.println(name);
-            reader.openBook("file:///android_assset/El_libro_de_Enoc-Anonimo.epub");
         } catch (IOException exception) {
             exception.printStackTrace();
         }
     }
 
-    public Config readerConfig() {
-        config=new Config();
-        config.setShowTts(false);
-        config.setNightMode(true);
-        config.setFontSize(20);
-        return config;
-    }
+
 
     // Ver el contenido de un archivo
     public String readContent(Context context, String filename){
@@ -108,4 +97,3 @@ public class ReaderController {
 
 
 }
-*/

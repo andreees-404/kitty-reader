@@ -12,6 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter()
         maven(url=uri("https://jitpack.io"))
+        maven(url="https://github.com/psiegman/mvn-repo/raw/master/releases")
     }
 
 }

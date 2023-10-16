@@ -1,7 +1,7 @@
 package com.cutedomain.kittyreader.screens.library
 
-// import com.cutedomain.kittyreader.domain.controllers.ReaderController
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.cutedomain.kittyreader.EpubActivity
 import com.cutedomain.kittyreader.R
 import com.cutedomain.kittyreader.domain.controllers.FileHandler
 import com.cutedomain.kittyreader.models.Book
@@ -68,9 +69,12 @@ import com.cutedomain.kittyreader.models.DataProvider
 import com.cutedomain.kittyreader.models.items
 import kotlinx.coroutines.launch
 
-// Notes : Set LazyColumn into LibraryScreen function on Scaffold giving innerPadding parameter
-// Lista principal
-
+/*
+* Pantalla principal de la librería
+*
+* @param navController
+*   Componente necesario para la navegación
+*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(navController: NavController){
@@ -86,7 +90,7 @@ fun LibraryScreen(navController: NavController){
     var selectedItemIndex by rememberSaveable {
         mutableStateOf(0)
     }
-    // Barra lateral
+    // Menú lateral
     DismissibleNavigationDrawer(drawerContent = {
         DismissibleDrawerSheet {
             Column(
@@ -137,11 +141,10 @@ fun LibraryScreen(navController: NavController){
                 )
             },
             floatingActionButton = {
-                AddButton {
-                    // Agregar un nuevo libro desde el sistema
-                    Toast.makeText(context, "Opening book", Toast.LENGTH_SHORT).show()
-                    reader.openEpub(context)
-
+                AddButton{
+                    val intent = Intent(context, EpubActivity::class.java).also {
+                        context.startActivity(it)
+                    }
                 }
             }
         ) {
@@ -152,7 +155,20 @@ fun LibraryScreen(navController: NavController){
 }
 
 
-// Lista de libros
+/*
+* Muestra los libros en la pantalla
+*
+* @param context
+*   Contexto de la activity para aplicar
+*   funcionalidades como un Toast.makeText()
+*
+* @test
+* @param books
+*   Lista de libros para mostrarlos en la vista
+*
+*  @param innerPadding
+*   Padding proporcionado por la columna principal
+*/
 @Composable
 fun BookList(context: Context, books: List<Book>, innerPadding: PaddingValues) {
     // val reader=ReaderController(context)
@@ -175,10 +191,14 @@ fun BookList(context: Context, books: List<Book>, innerPadding: PaddingValues) {
                         .padding(8.dp)
                         .wrapContentHeight()
                         .clickable {
-                            Toast.makeText(
+                            Toast
+                                .makeText(
                                     context,
                                     "Click en card ${bookItem.isbn}",
-                                    Toast.LENGTH_SHORT).show() },
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                        },
                     colors=CardDefaults.cardColors(colorResource(id = R.color.card_description)),
                     elevation = CardDefaults.cardElevation(8.dp)
                 ) {
@@ -197,11 +217,31 @@ fun BookList(context: Context, books: List<Book>, innerPadding: PaddingValues) {
 }
 
 
-// Tarjeta de libro
+/*
+* Presentación del libro en una tarjeta
+*
+* @param isbn
+*   Identificador del libro
+*
+* @param title
+*   Título del libro
+*
+* @param author
+*   Autor del libro
+*
+* @param date
+*   Fecha de publicación del libro
+*
+* @param category
+*   Categoría del libro
+*
+* @param image
+*   Imagen representado en Integer -> R.drawable.image_example
+*/
 @Composable
-fun BookCard(isbn: String, title: String, author: String, date: String, category: String, image: Int
-) {
+fun BookCard(isbn: String, title: String, author: String, date: String, category: String, image: Int) {
     // All variables
+
     // Book progress
     val currentProgress by remember { mutableStateOf(0f) }
     Row {
@@ -250,7 +290,14 @@ fun BookCard(isbn: String, title: String, author: String, date: String, category
 }
 
 
-// AppBar
+/*
+* Barra de navegación de la pantalla
+* de libros (posbile migración a otro fichero)
+*
+* @param onClick
+*   Función para implementar la lógica de tocar
+*   el ícono de navegación
+*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(onClick: () -> Unit){
@@ -273,7 +320,14 @@ fun AppBar(onClick: () -> Unit){
     )
 }
 
-// Floating Action Button
+/*
+* Agregar libros
+* desde el almacenamiento interno del sistema
+*
+* @param onClick
+*   Función a implementar en el
+*   evento al presionar el botón
+*/
 @Composable
 fun AddButton(onClick: () -> Unit){
     FloatingActionButton(
@@ -285,7 +339,9 @@ fun AddButton(onClick: () -> Unit){
     }
 }
 
-// Preview
+/*
+* Preview de la app
+*/
 @Preview(showBackground = true)
 @Composable
 fun BookListPreview(){
