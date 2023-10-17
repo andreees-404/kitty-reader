@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Environment
 import android.provider.OpenableColumns
 import android.util.Log
 import com.cutedomain.kittyreader.EpubActivity
@@ -12,7 +11,6 @@ import com.cutedomain.kittyreader.MainActivity
 import com.cutedomain.kittyreader.PdfActivity
 import com.folioreader.FolioReader
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -66,39 +64,12 @@ class FileHandler {
             while (inputStream.read(buffer).also { read = it } != -1){
                 outputStream.write(buffer, 0, read)
             }
+            Log.d(TAG, "copyFile: File copied!")
         } catch (e: IOException){
             Log.d(TAG, "copyFile: Failed to copy File")
         }
     }
 
-    /*
-    * */
-    internal fun copyFromAssets(context: Context, filename: String, directory: String){
-        val dirPath = "${Environment.getExternalStorageDirectory().absolutePath}kittyreader/$directory"
-        val dir = File(dirPath)
-        if (!dir.exists()){
-            dir.mkdir()
-        }
-        val assetManager = context.assets
-        var inputStream: InputStream? = null
-        var outputStream: OutputStream? = null
-
-        try{
-            inputStream = assetManager.open(filename)
-            val outFile = File(dirPath, filename)
-            outputStream = FileOutputStream(outFile)
-            copyFile(inputStream, outputStream)
-            Log.d(TAG, "copyFromAssets: File saved!")
-        
-        } catch (e: IOException){
-            Log.d(TAG, "copyFromAssets: File was not saved!")
-        }
-        finally {
-            inputStream?.close()
-            outputStream?.close()
-        }
-
-    }
 
     internal fun noSuchFile(context: Context){
         val backIntent = Intent(context, MainActivity::class.java).also {
