@@ -2,7 +2,9 @@ package com.cutedomain.kittyreader.domain
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.cutedomain.kittyreader.MainActivity
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -21,7 +23,12 @@ class AuthActivity : AppCompatActivity() {
 
     }
 
-    internal fun FabebookSignIn(){
+
+    /*
+    * Autenticar mediante Facebook OAuth2
+    *
+    * */
+    internal fun facebookSignIn(){
         // Obtener el email
         LoginManager.getInstance().logInWithReadPermissions(this, listOf("email"))
 
@@ -43,9 +50,8 @@ class AuthActivity : AppCompatActivity() {
                 }
             }
 
-
             override fun onCancel() {
-                TODO("Not yet implemented")
+                Log.d(TAG, "onCancel: El usuario ha cancelado la operación!")
             }
 
             override fun onError(error: FacebookException?) {
@@ -54,13 +60,27 @@ class AuthActivity : AppCompatActivity() {
         })
     }
 
+
+    /* Autenticar con el proveedor de Google*/
+    internal fun googleSignIn(){
+
+    }
+
+    /*
+    * Dirigir a la pantalla principal
+    *
+    * */
     private fun goHome() {
-        TODO("Not yet implemented")
+        Intent(this, MainActivity::class.java).also {
+            startActivity(it)
+        }
+        finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         callbackManager.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
+
 
 
     }

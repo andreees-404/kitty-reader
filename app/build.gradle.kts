@@ -113,14 +113,18 @@ dependencies {
 
     // Dependencias necesarias para FolioReader
     implementation("androidx.multidex:multidex:2.0.1")
-    implementation("com.github.kittinunf.fuel:fuel:1.15.0")
+    implementation ("com.github.FolioReader:FolioReader-Android:0.5.4")
+
+
+
     //noinspection GradleCompatible
     implementation ("com.android.support:appcompat-v7:28.0.0")
     implementation("androidx.activity:activity-ktx:1.7.2")
 
-    // Epub Reader
-    implementation ("com.github.FolioReader:FolioReader-Android:0.5.4")
+    // Firebase Storage
     implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
+
 
     // Google OAuth
     implementation("com.google.android.gms:play-services-auth:20.7.0")

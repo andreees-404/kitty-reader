@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader;
+package com.cutedomain.kittyreader.domain;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,11 +18,15 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cutedomain.kittyreader.domain.OnFilePathRecivedListener;
+import com.cutedomain.kittyreader.R;
+import com.cutedomain.kittyreader.domain.utils.OnFilePathRecivedListener;
+import com.cutedomain.kittyreader.models.EBookJTest;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,14 +35,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Stack;
 
+import nl.siegmann.epublib.domain.Author;
 import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Metadata;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.domain.TOCReference;
 import nl.siegmann.epublib.epub.EpubReader;
 
 public class EpubActivity extends AppCompatActivity {
+
+    /* Ebook variables */
+    private Metadata metadata;
+    private Book book;
+
+    Resource coverPage;
+
+
+    /*
+    * Notificador al recibir la ruta del archivo */
+    private OnFilePathRecivedListener pathListener;
+    private List<TOCReference> indexReferences;
+
+
 
     private static final String TAG = "EpubActivity";
     private static final String APP_DIR = "/kittyreader";
@@ -51,19 +70,13 @@ public class EpubActivity extends AppCompatActivity {
     // Contenido del libro
     private WebView pageContent;
 
-
     // Título del libro
     private TextView pageTitle;
     private int currentPage = 1;
-    private Book book;
+    private Resource coverImage;
 
-    // Notificador de cuando se recibe la ruta del libro
-    private OnFilePathRecivedListener pathListener;
 
-    // Lista de los índices del libro
-    private List<TOCReference> indexReferences;
-
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +85,9 @@ public class EpubActivity extends AppCompatActivity {
         pageContent = findViewById(R.id.pageContent);
         pageContent.setVerticalScrollBarEnabled(true);
         pageContent.setHorizontalScrollBarEnabled(true);
+
+        pageContent.getSettings().setJavaScriptEnabled(true);
+        pageContent.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         pageTitle = findViewById(R.id.pageTitle);
 
         pageContent.setOnTouchListener(new View.OnTouchListener() {
@@ -109,14 +125,21 @@ public class EpubActivity extends AppCompatActivity {
             public void onFilePathRecivedListener(String path) {
                 if (path != null){
                     Log.d(TAG, "onFilePathRecivedListener: successful");
+
+                    // Mostrar el libro
                     openBook(path);
-                    showPage(currentPage);
+
+                    // Mostrar el contenido
+                    //showPage(currentPage);
                 } else {
                     Log.d(TAG, "onFilePathRecivedListener: no such file or directory!");
                 }
             }};
         setFilePathRecived(pathListener);
-        copyFromAssets("La_Mitologia_contada_a_los_ninos-Fernan_Caballero.epub", APP_DIR);
+
+        // Copiar el libro desde la carpeta assets de Android Studio
+        copyFromAssets("La_Mitologia_contada_a_los_ninos-Fernan_Caballero.epub", BOOKS_DIR);
+        // Obtener la ruta de archivo
         getFilePath();
     }
 
@@ -139,7 +162,6 @@ public class EpubActivity extends AppCompatActivity {
 
     /*
      * Mostrar la página anterior a la actual
-     * revisando el historial
      *  */
     private void showBackPage() {
         if (currentPage > 0){
@@ -159,7 +181,7 @@ public class EpubActivity extends AppCompatActivity {
      * Usar una vez para hacer pruebas
      * */
     private void copyFromAssets(String filename, String directory) {
-        String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + directory;
+        String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_DIR + directory;
         File dir = new File(dirPath);
         if (!dir.exists()) {
             // Crear el directorio /kittyreader/ebooks
@@ -209,7 +231,7 @@ public class EpubActivity extends AppCompatActivity {
                     String filename = getNameFromUri(o);
                     if (filename != null) {
                         System.out.println("Nombre del archivo -> " + filename);
-                        bookPath = Environment.getExternalStorageDirectory().getAbsolutePath() + BOOKS_DIR + "/" + filename;
+                        bookPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_DIR + BOOKS_DIR + "/" + filename;
                         System.out.println("Path ->" + bookPath);
                         Log.d(TAG, "onActivityResult: File -> " + bookPath);
                         if (pathListener != null) {
@@ -242,8 +264,25 @@ public class EpubActivity extends AppCompatActivity {
             FileInputStream epubFile = new FileInputStream(filePath);
             book = (new EpubReader()).readEpub(epubFile);
 
-            // Load index
+
+            // Obtener los metadatos
+            metadata = book.getMetadata();
+
+            List<Author> author;
+
+            author = metadata.getAuthors();
+
+            Log.d(TAG, "openBook: Autor: " + author.get(0).toString());
+            // Cargar la imagen de portada
+            coverPage = book.getCoverPage();
+            coverImage = book.getCoverImage();
+
+            EBookJTest _book = new EBookJTest(author.get(0).toString(), metadata.getTitles().get(0));
+
+            Log.d(TAG, "openBook: autor = " + _book.getAuthor());
+            // Cargar las referencias -> Índice
             indexReferences = book.getTableOfContents().getTocReferences();
+            Log.d(TAG, "openBook: Referencias " + indexReferences.toString());
         } catch (IOException e) {
             Log.d(TAG, "openBook: " + e.getMessage());
         }
@@ -260,8 +299,16 @@ public class EpubActivity extends AppCompatActivity {
     private void showPage(int pageIndex) {
         if (book != null && pageIndex >= 0 && pageIndex < book.getContents().size()) {
             Resource page = book.getContents().get(pageIndex);
-            setContentView(page);
+            if(page != null && coverImage != null) {
+                setContentView(page, coverPage);
 
+                // Cargar el título del libro
+                pageTitle.setText(book.getTitle());
+
+
+            } else {
+                Log.d(TAG, "showPage: Error with page or cover page...");
+            }
         }
     }
 
@@ -273,17 +320,24 @@ public class EpubActivity extends AppCompatActivity {
      * @param page
      *   Página del libro
      */
-    private void setContentView(Resource page) {
+    private void setContentView(Resource page, Resource coverImage) {
         try {
             Log.d(TAG, "showPage: loading book");
             InputStream inputStream = page.getInputStream();
+            InputStream imageStream = coverImage.getInputStream();
+
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             inputStream.close();
 
+            byte[] imageBuffer = new byte[imageStream.available()];
+            imageStream.read(imageBuffer);
+            imageStream.close();
+
             // Cargar el contenido
             String content = new String(buffer, "UTF-8");
             pageContent.loadDataWithBaseURL(null, content, "text/html", "UTF-8", null);
+            pageContent.setWebViewClient(new WebViewClient());
 
         } catch (IOException e) {
             Log.d(TAG, "showPage: An error was ocurred!");

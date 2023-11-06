@@ -63,12 +63,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
-import com.cutedomain.kittyreader.domain.AuthActivity
 import com.cutedomain.kittyreader.domain.controllers.UserController
 import com.cutedomain.kittyreader.screens.navigation.AppScreens
 
-private val auth = AuthActivity()
-private val controller: UserController= UserController()
+private val userController: UserController= UserController()
+
+/*
+* Mostrar los elementos ordenados en la pantalla
+*
+* @param navController
+*   Elemento necesario para la navegación
+* */
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -96,6 +101,14 @@ fun LoginScreen(navController: NavController){
 
 }
 
+
+/*
+* Elementos que componen el formulario
+* de inicio de sesión
+*
+* @param navController
+*   Elemento de navegación
+*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginForm(navController: NavController){
@@ -163,7 +176,7 @@ fun LoginForm(navController: NavController){
                 value = pass,
                 onValueChange = {
                     pass = it
-                    controller.validatePass(pass = pass)},
+                    userController.validatePass(pass = pass)},
                 label = {
                     Text(
                         "Password",
@@ -195,7 +208,7 @@ fun LoginForm(navController: NavController){
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = { val validator = controller.SignIn(
+                onClick = { val validator = userController.SignIn(
                     email = email,
                     pass= pass,
                     context = context)
@@ -240,7 +253,7 @@ fun LoginForm(navController: NavController){
             )
 
             // Iniciar sesión con Google
-            OutlinedButton(onClick = { controller.SignInGoogle() },
+            OutlinedButton(onClick = { userController.authFacebook() },
                 colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -256,7 +269,7 @@ fun LoginForm(navController: NavController){
             }
 
             // Iniciar sesión con Facebook
-            OutlinedButton(onClick = { auth.FabebookSignIn() },
+            OutlinedButton(onClick = { userController.authFacebook() },
                 colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
                 modifier = Modifier
                     .fillMaxWidth()

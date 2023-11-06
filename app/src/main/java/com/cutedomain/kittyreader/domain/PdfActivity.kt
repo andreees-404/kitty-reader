@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader
+package com.cutedomain.kittyreader.domain
 
 import android.os.Bundle
 import android.util.Log
@@ -9,9 +9,13 @@ import com.cutedomain.kittyreader.domain.controllers.FileHandler
 
 class PdfActivity : AppCompatActivity() {
 
+    private companion object {
     private val TAG: String = "PDF_ACTIVITY"
+
+    }
     private lateinit var binding: ActivityPdfBinding
-    private val reader = FileHandler()
+
+    private val filesController = FileHandler()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPdfBinding.inflate(layoutInflater)
@@ -24,8 +28,9 @@ class PdfActivity : AppCompatActivity() {
 
 
     /*
-    * Esta función carga un pdf
-    * con la llamada de un launcher para seleccionar un archivo
+    * Cargar un archivo PDF en una vista,
+    * esta función permite al usuario elegir
+    * un archivo de formato .pdf en el explorador de archivos
     */
     private fun launchPdf(){
         try {
@@ -38,14 +43,14 @@ class PdfActivity : AppCompatActivity() {
                     }
                 } else {
                     Log.d(TAG, "launchPdf: no file selected!")
-                    reader.noSuchFile(context = this)
+                    filesController.noSuchFile(context = this)
                     finish()
                 }
             }
             launcher.launch("application/pdf")
         } catch (e: Exception){
             Log.d(TAG, "${e.message}")
-            reader.noSuchFile(this)
+            filesController.noSuchFile(this)
             finish()
         }
     }

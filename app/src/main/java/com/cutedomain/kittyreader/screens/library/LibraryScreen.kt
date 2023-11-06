@@ -1,7 +1,6 @@
 package com.cutedomain.kittyreader.screens.library
 
 import android.content.Context
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -61,12 +60,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.cutedomain.kittyreader.EpubActivity
 import com.cutedomain.kittyreader.R
 import com.cutedomain.kittyreader.domain.controllers.FileHandler
-import com.cutedomain.kittyreader.models.Book
 import com.cutedomain.kittyreader.models.DataProvider
+import com.cutedomain.kittyreader.models.EBook
 import com.cutedomain.kittyreader.models.items
+import com.cutedomain.kittyreader.screens.navigation.AppScreens
 import kotlinx.coroutines.launch
 
 /*
@@ -141,10 +140,12 @@ fun LibraryScreen(navController: NavController){
                 )
             },
             floatingActionButton = {
-                AddButton{
-                    val intent = Intent(context, EpubActivity::class.java).also {
-                        context.startActivity(it)
-                    }
+                AddButton {
+
+                    //val intent = Intent(context, EpubActivity::class.java).also {
+                    //    context.startActivity(it)
+                    //}
+                    navController.navigate(AppScreens.ChooseFile.route)
                 }
             }
         ) {
@@ -170,14 +171,13 @@ fun LibraryScreen(navController: NavController){
 *   Padding proporcionado por la columna principal
 */
 @Composable
-fun BookList(context: Context, books: List<Book>, innerPadding: PaddingValues) {
-    // val reader=ReaderController(context)
+fun BookList(context: Context, books: List<EBook>, innerPadding: PaddingValues) {
 
     Image(painter = painterResource(id = R.drawable.kittybanner),
         contentDescription = "Kitty Banner",
         modifier= Modifier
             .padding(innerPadding)
-            .fillMaxWidth())
+            .fillMaxWidth() )
     LazyColumn(
         modifier= Modifier
             .fillMaxSize()

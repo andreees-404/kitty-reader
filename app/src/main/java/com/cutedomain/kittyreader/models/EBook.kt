@@ -1,6 +1,7 @@
 package com.cutedomain.kittyreader.models
 
-data class Book(
+
+data class EBook(
     val isbn : String,
     val title: String,
     val author: String,

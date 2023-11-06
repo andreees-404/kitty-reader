@@ -3,14 +3,17 @@ package com.cutedomain.kittyreader.models
 import com.cutedomain.kittyreader.R
 
 object DataProvider {
+
+    /* Lista de libros temporal para hacer pruebas funcionales */
     val bookList= listOf(
-        Book(isbn="1346786432456", title ="Hola mundo", author = "Hola mundo",date="1992", category = "Política", image = R.drawable.froyo),
-        Book(isbn="3454675768543", title ="Libro numero 2", author = "El anticristo",date="1956", category = "Filosofía", image=R.drawable.jellybean),
-        Book(isbn="1346786432456", title ="El Padrino", author = "Mario Puzzo",date="1969", category = "Policial", image=R.drawable.ics),
-        Book(isbn="1346786432456", title ="Hola mundo", author = "Un ctm",date="2000", category = "Romántica", image=R.drawable.kitkat),
-        Book(isbn="1346786432456", title ="Hola mundo", author = "Alguien",date="2013", category = "Poesía", image =R.drawable.lollipop),
-        Book(isbn="2343546564323", title ="Hola mundo", author = "Alguien 2",date="2013", category = "Poesía", image =R.drawable.lollipop),
-        Book(isbn="1346786421324", title ="Hola mundo", author = "Alguien 3",date="2013", category = "Poesía", image =R.drawable.lollipop),
+        EBook(isbn="1346786432456", title ="Hola mundo", author = "Hola mundo",date="1992", category = "Política", image = R.drawable.froyo),
+        EBook(isbn="3454675768543", title ="Libro numero 2", author = "El anticristo",date="1956", category = "Filosofía", image=R.drawable.jellybean)
 
     )
+
+    val bookFormats = listOf(
+        Formats(name = "EPUB", description = "Lee tus libros en formatos electrónicos.", extension = ".epub", image = R.drawable.epublogo_removebg_preview),
+        Formats(name = "PDF", description = "Abre tus libros en formato de documentos.", extension = ".pdf", image = R.drawable.pdf_format_file_template_your_design_97886_11001_removebg_preview)
+    )
+
 }

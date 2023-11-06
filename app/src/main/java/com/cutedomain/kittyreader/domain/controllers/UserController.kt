@@ -1,25 +1,23 @@
 package com.cutedomain.kittyreader.domain.controllers
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import com.cutedomain.kittyreader.domain.AuthActivity
 import com.cutedomain.kittyreader.screens.account.ShowErr
 import com.facebook.CallbackManager
 import com.google.firebase.auth.FirebaseAuth
 
+
 class UserController {
 
-    // Esta clase define las validaciones
-    // y operaciones necesarias para con los usuarios
-    /*
-    * Esta función implementa la lógica de inicio de sesión a la app
-    * @args String email
-    * @args String pass
-    * @args Context context
-    * @args NavController navController
-    * @args ViewModel userViewModel
-    *
-    * */
+
+
+    companion object {
+        val TAG: String = "USER_CONTROLLER"
+    }
+
+
     private val auth = AuthActivity()
     private val callback = CallbackManager.Factory.create()
 
@@ -50,14 +48,28 @@ class UserController {
     }
 
 
-    // Función para registrar nuevos usuarios
+    /*
+    * Registrar nuevos usuarios con firebase
+    *
+    * @param email
+    *   Dirección de correo electrónico del usuario
+    *
+    * @param pass
+    *   Contraseña creada por el usuario
+    *
+    * @param context
+    *   Contexto de la pantalla actual
+    *
+    * @param conditionalTerms
+    *
+    */
     internal fun SignUp(
         email: String,
         pass: String,
         context: Context,
         conditionalTerms: Boolean
     ): Boolean {
-        var register: Boolean = false
+        var register = false
         if (conditionalTerms) {
             if (email.isNotEmpty() && pass.isNotEmpty() && verifyEmail(email)) {
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, pass)
@@ -67,6 +79,7 @@ class UserController {
                             register = true
                         } else {
                             ShowErr(context, "El usuario o contraseña son inválidos, vuelve a intentarlo.")
+                            Log.d(TAG, "SignUp: ")
                         }
                     }
                 if (register) return true
@@ -85,13 +98,13 @@ class UserController {
     }
 
     // Login con Facebook
-    internal fun SignInFacebook() {
-        auth.FabebookSignIn()
+    internal fun authFacebook() {
+        auth.facebookSignIn()
     }
 
     // Login con Google
-    internal fun SignInGoogle() {
-
+    internal fun authGoogle() {
+        auth.googleSignIn()
     }
     internal fun validatePass(pass: String): Boolean {
         return !(pass.length > 8 || pass.isEmpty())
