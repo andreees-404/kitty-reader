@@ -2,29 +2,46 @@ package com.cutedomain.kittyreader.domain.controllers;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.SegmentFinder;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.google.android.gms.common.api.internal.IStatusCallback;
+
 import org.w3c.dom.ls.LSParserFilter;
+
+import java.util.Date;
 
 public class DatabaseController extends SQLiteOpenHelper {
 
-
+    public static final String TAG = "DatabaseController";
     public static final String DB_NAME = "kittyreader";
     public static final int DB_VERSION = 1;
 
-    public static final String table_name = "books";
+    /* Table books
+    * */
+    public static final String books_table = "books";
 
 
-    public static final String primary_key = "book_id";
+    public static final String primary_key_books = "book_id";
     public static final String title_col = "title";
     public static final String author_col = "author";
     public static final String url_col = "url";
     public static final String category_col = "category";
+    public static final String date_col = "category";
+    private static final String year_col = "year";
 
+    /* Table users
+    * */
+    public static final String users_table = "users";
+    public static final String primary_key_users = "user_id";
+    public static final String username_col = "username";
+    public static final String email_col = "email";
+    public static final String dateCreated = "date_created";
 
 
     public DatabaseController(Context context){
@@ -37,9 +54,29 @@ public class DatabaseController extends SQLiteOpenHelper {
     * */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "CREATE TABLE ";
+        String booksTableQuery = "CREATE TABLE " + books_table +"(" +
+                primary_key_books + " integer primary key AUTOINCREMENT," +
+                title_col + " TEXT," +
+                author_col + " TEXT," +
+                year_col + " TEXT," +
+                category_col + " TEXT," +
+                date_col +" TEXT)";
 
-        //db.execSQL(query);
+        String usersTableQuery = "CREATE TABLE " + users_table + "(" +
+                primary_key_users + " integer primary key AUTOINCREMENT," +
+                username_col + " TEXT NOT NULL," +
+                email_col + " TEXT NOT NULL," +
+                dateCreated + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
+
+        try {
+            db.execSQL(booksTableQuery);
+            db.execSQL(usersTableQuery);
+            Log.d(TAG, "onCreate: Tables created successfully");
+        } catch (SQLException e){
+            Log.d(TAG, "onCreate: SQL not executed");
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -47,16 +84,48 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     }
 
-
-    public int addBook(String title, String author, String category, String url){
+    /*
+    * Insert a book to database
+    * ---------> Considerar si en un futuro se agrega el ISBN del libro?
+    * @param title Titulo del libro
+    * @param author Autor del libro
+    * @param category Categoría del libro
+    * @param url Dirección url de descarga del libro
+    *
+    * @retrun Si la consulta se hizo correctamente*/
+    public int addBook(String title, String author, String category, String url, String year){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(title_col, title);
-        values.put(author_col, author);
-        values.put(url_col, url);
-        values.put(category_col, category);
 
-        db.insert(table_name, null, values);
-        return 1;
+        try {
+            values.put(title_col, title);
+            values.put(author_col, author);
+            values.put(url_col, url);
+            values.put(category_col, category);
+            values.put(year_col, year);
+
+            db.insert(books_table, null, values);
+            return 1;
+        } catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int addUser(String username, String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        try{
+            values.put(username_col, username);
+            values.put(email, email_col);
+
+            db.insert(users_table, null, values);
+            return 1;
+        } catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
     }
 }
+

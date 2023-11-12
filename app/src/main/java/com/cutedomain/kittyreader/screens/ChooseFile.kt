@@ -103,7 +103,7 @@ private fun selectFile(context: Context, name: String) {
         //    context.startActivity(it)
         //}
         Intent(context, PdfActivity::class.java).also {
-
+            context.startActivity(it)
         }
     }
     else if(name == "EPUB"){
@@ -111,9 +111,9 @@ private fun selectFile(context: Context, name: String) {
         //    it.putExtra("format", name)
         //    context.startActivity(it)
         //}
-        Intent(context, EpubActivity::class.java).also {
-            context.startActivity(it)
-        }
+      Intent(context, EpubActivity::class.java).also {
+          context.startActivity(it)
+      }
     }
 }
 

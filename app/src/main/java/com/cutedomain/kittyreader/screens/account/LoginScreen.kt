@@ -4,7 +4,6 @@ package com.cutedomain.kittyreader.screens.account
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -30,7 +28,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -47,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -253,38 +249,38 @@ fun LoginForm(navController: NavController){
             )
 
             // Iniciar sesión con Google
-            OutlinedButton(onClick = { userController.authFacebook() },
-                colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(PaddingValues(start = 50.dp, end = 50.dp, bottom = 10.dp)),
-                shape = RoundedCornerShape(50)
-                ){
-                Image(painter = painterResource(id = R.drawable.google),
-                    contentDescription = null)
-                Text(text = "Inicia sesión con Google",
-                    modifier=Modifier.padding(PaddingValues(start=10.dp)),
-                    style= TextStyle(color= colorResource(id = R.color.black))
-                )
-            }
+            //OutlinedButton(onClick = { userController.authFacebook() },
+            //    colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
+            //    modifier = Modifier
+            //        .fillMaxWidth()
+            //        .padding(PaddingValues(start = 50.dp, end = 50.dp, bottom = 10.dp)),
+            //    shape = RoundedCornerShape(50)
+            //    ){
+            //    Image(painter = painterResource(id = R.drawable.google),
+            //        contentDescription = null)
+            //    Text(text = "Inicia sesión con Google",
+            //        modifier=Modifier.padding(PaddingValues(start=10.dp)),
+            //        style= TextStyle(color= colorResource(id = R.color.black))
+            //    )
+            //}
 
             // Iniciar sesión con Facebook
-            OutlinedButton(onClick = { userController.authFacebook() },
-                colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(PaddingValues(start = 50.dp, end = 50.dp)) ,
-                shape = RoundedCornerShape(50)
-                ) {
-                Image(painter =painterResource(id = R.drawable.facebook),
-                    contentDescription = null)
-                Text(text = "Inicia sesión con Facebook",
-                    modifier= Modifier
-                        .padding(PaddingValues(start = 10.dp))
-                        .fillMaxWidth(),
-                    style= TextStyle(color= colorResource(id = R.color.black))
-                )
-            }
+            //OutlinedButton(onClick = { userController.authFacebook() },
+            //    colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
+            //    modifier = Modifier
+            //        .fillMaxWidth()
+            //        .padding(PaddingValues(start = 50.dp, end = 50.dp)) ,
+            //    shape = RoundedCornerShape(50)
+            //    ) {
+            //    Image(painter =painterResource(id = R.drawable.facebook),
+            //        contentDescription = null)
+            //    Text(text = "Inicia sesión con Facebook",
+            //        modifier= Modifier
+            //            .padding(PaddingValues(start = 10.dp))
+            //            .fillMaxWidth(),
+            //        style= TextStyle(color= colorResource(id = R.color.black))
+            //    )
+            //}
         }
 
         Button(

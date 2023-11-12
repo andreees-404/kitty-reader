@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cutedomain.kittyreader.R;
+import com.cutedomain.kittyreader.domain.controllers.FileUtil;
 import com.cutedomain.kittyreader.domain.utils.OnFilePathRecivedListener;
 import com.cutedomain.kittyreader.models.EBookJTest;
 
@@ -44,6 +45,8 @@ import nl.siegmann.epublib.domain.TOCReference;
 import nl.siegmann.epublib.epub.EpubReader;
 
 public class EpubActivity extends AppCompatActivity {
+
+    private FileUtil fileUtil;
 
     /* Ebook variables */
     private Metadata metadata;
@@ -75,6 +78,9 @@ public class EpubActivity extends AppCompatActivity {
     private int currentPage = 1;
     private Resource coverImage;
 
+    // Necesario para manejar los gestos
+    private boolean isZooming;
+
 
     @SuppressLint({"ClickableViewAccessibility", "MissingInflatedId"})
     @Override
@@ -87,8 +93,14 @@ public class EpubActivity extends AppCompatActivity {
         pageContent.setHorizontalScrollBarEnabled(true);
 
         pageContent.getSettings().setJavaScriptEnabled(true);
+        pageContent.getSettings().setBuiltInZoomControls(true);
+        pageContent.getSettings().setDisplayZoomControls(false);
+
+        pageContent.getSettings().setSupportZoom(true);
         pageContent.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         pageTitle = findViewById(R.id.pageTitle);
+
+        copyFromAssets("El_libro_de_Enoc-Anonimo.epub", BOOKS_DIR);
 
         pageContent.setOnTouchListener(new View.OnTouchListener() {
             private float startX;
@@ -127,7 +139,7 @@ public class EpubActivity extends AppCompatActivity {
                     Log.d(TAG, "onFilePathRecivedListener: successful");
 
                     // Mostrar el libro
-                    openBook(path);
+                    //openBook(path);
 
                     // Mostrar el contenido
                     //showPage(currentPage);
@@ -138,7 +150,7 @@ public class EpubActivity extends AppCompatActivity {
         setFilePathRecived(pathListener);
 
         // Copiar el libro desde la carpeta assets de Android Studio
-        copyFromAssets("La_Mitologia_contada_a_los_ninos-Fernan_Caballero.epub", BOOKS_DIR);
+
         // Obtener la ruta de archivo
         getFilePath();
     }
@@ -185,12 +197,13 @@ public class EpubActivity extends AppCompatActivity {
         File dir = new File(dirPath);
         if (!dir.exists()) {
             // Crear el directorio /kittyreader/ebooks
-            dir.mkdir();
+            dir.mkdirs();
         }
         AssetManager assetManager = getAssets();
         InputStream inputStream;
         OutputStream outputStream;
         try {
+
             inputStream = assetManager.open(filename);
             File outFile = new File(dirPath, filename);
             outputStream = new FileOutputStream(outFile);
@@ -219,6 +232,7 @@ public class EpubActivity extends AppCompatActivity {
 
     /*
      * Obtener la ruta de un archivo que seleccionemos
+     *  El libro debe estar en la carpeta /kittyreader/books
      * */
     private void getFilePath() {
         launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
@@ -226,18 +240,22 @@ public class EpubActivity extends AppCompatActivity {
             @Override
             public void onActivityResult(Uri o) {
                 if (o != null) {
-                    System.out.println();
-                    DocumentFile documentFile = DocumentFile.fromSingleUri(EpubActivity.this, o);
-                    String filename = getNameFromUri(o);
-                    if (filename != null) {
-                        System.out.println("Nombre del archivo -> " + filename);
-                        bookPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_DIR + BOOKS_DIR + "/" + filename;
-                        System.out.println("Path ->" + bookPath);
-                        Log.d(TAG, "onActivityResult: File -> " + bookPath);
-                        if (pathListener != null) {
-                            pathListener.onFilePathRecivedListener(bookPath);
-                        }
-                    }
+                    //System.out.println();
+                    //DocumentFile documentFile = DocumentFile.fromSingleUri(EpubActivity.this, o);
+                    //
+                    //
+                    //String filename = getNameFromUri(o);
+                    //if (filename != null) {
+                    //    System.out.println("Nombre del archivo -> " + filename);
+                    //    bookPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_DIR + BOOKS_DIR + "/" + filename;
+                    //    System.out.println("Path ->" + bookPath);
+                    //    Log.d(TAG, "onActivityResult: File -> " + bookPath);
+                    //    if (pathListener != null) {
+                    //        pathListener.onFilePathRecivedListener(bookPath);
+                    //    }
+                    //}
+                    String path = FileUtil.getRealPathFromURI(getApplicationContext(), o);
+                    Log.d(TAG, "onActivityResult: " + path);
                 }
             }
         });
@@ -282,7 +300,7 @@ public class EpubActivity extends AppCompatActivity {
             Log.d(TAG, "openBook: autor = " + _book.getAuthor());
             // Cargar las referencias -> Índice
             indexReferences = book.getTableOfContents().getTocReferences();
-            Log.d(TAG, "openBook: Referencias " + indexReferences.toString());
+
         } catch (IOException e) {
             Log.d(TAG, "openBook: " + e.getMessage());
         }
@@ -322,7 +340,7 @@ public class EpubActivity extends AppCompatActivity {
      */
     private void setContentView(Resource page, Resource coverImage) {
         try {
-            Log.d(TAG, "showPage: loading book");
+            Log.d(TAG, "showPage: loading book in: " + currentPage);
             InputStream inputStream = page.getInputStream();
             InputStream imageStream = coverImage.getInputStream();
 
@@ -336,8 +354,8 @@ public class EpubActivity extends AppCompatActivity {
 
             // Cargar el contenido
             String content = new String(buffer, "UTF-8");
-            pageContent.loadDataWithBaseURL(null, content, "text/html", "UTF-8", null);
             pageContent.setWebViewClient(new WebViewClient());
+            pageContent.loadDataWithBaseURL(null, content, "text/html", "UTF-8", null);
 
         } catch (IOException e) {
             Log.d(TAG, "showPage: An error was ocurred!");

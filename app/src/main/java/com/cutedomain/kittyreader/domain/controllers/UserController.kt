@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import com.cutedomain.kittyreader.domain.AuthActivity
+import com.cutedomain.kittyreader.domain.UserViewModel
 import com.cutedomain.kittyreader.screens.account.ShowErr
 import com.facebook.CallbackManager
 import com.google.firebase.auth.FirebaseAuth
@@ -20,8 +21,17 @@ class UserController {
 
     private val auth = AuthActivity()
     private val callback = CallbackManager.Factory.create()
+    private lateinit var db: DatabaseController
+    private lateinit var user: UserViewModel
 
-    // Función para iniciar sesión con email
+    /*
+    * Login con Firebase
+    *
+    * @param email Correo electrónico del usuario
+    * @param pass Contraseña del usuario
+    * @param context Pantalla de inicio de sesión
+    *
+    * @return Si el usuario se autentica correctamente*/
     internal fun SignIn(
         email: String,
         pass: String,
@@ -60,31 +70,32 @@ class UserController {
     * @param context
     *   Contexto de la pantalla actual
     *
-    * @param conditionalTerms
     *
     */
     internal fun SignUp(
         email: String,
         pass: String,
         context: Context,
-        conditionalTerms: Boolean
     ): Boolean {
-        var register = false
-        if (conditionalTerms) {
+            var register = false
+
             if (email.isNotEmpty() && pass.isNotEmpty() && verifyEmail(email)) {
+
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, pass)
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
                             Toast.makeText(context, "Usuario creado con éxito", Toast.LENGTH_SHORT).show()
                             register = true
+
+
                         } else {
                             ShowErr(context, "El usuario o contraseña son inválidos, vuelve a intentarlo.")
-                            Log.d(TAG, "SignUp: ")
+                            Log.d(TAG, "SignUp: Failed to create user")
                         }
                     }
                 if (register) return true
             }
-        } else { register = false }
+
         return false
     }
 
@@ -108,6 +119,10 @@ class UserController {
     }
     internal fun validatePass(pass: String): Boolean {
         return !(pass.length > 8 || pass.isEmpty())
+    }
+
+    internal fun deleteUser(pass: String){
+        auth.removeUser(pass)
     }
 
 

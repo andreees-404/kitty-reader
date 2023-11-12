@@ -10,6 +10,8 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 
@@ -83,6 +85,28 @@ class AuthActivity : AppCompatActivity() {
 
 
 
+    }
+
+    internal fun removeUser(password: String) {
+        val auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+
+        if(user != null){
+             val credential: AuthCredential? = user?.email?.let { EmailAuthProvider.getCredential(it, password) }
+
+             user?.delete()?.addOnCompleteListener {
+                 if (it.isSuccessful) {
+                     Log.d(TAG, "removeUser: User deleted!")
+                     goHome()
+                     finish()
+                 }
+             }?.addOnFailureListener {
+                 Log.d(TAG, "removeUser: User cant removed!")
+                 goHome()
+                 finish()
+
+                 }
+             }
     }
 }
 

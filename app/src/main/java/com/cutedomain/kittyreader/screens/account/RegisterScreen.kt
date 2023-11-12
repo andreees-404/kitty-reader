@@ -1,6 +1,7 @@
 package com.cutedomain.kittyreader.screens.account
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -67,9 +68,9 @@ import com.cutedomain.kittyreader.screens.navigation.AppScreens
 
 
 // private val userViewModel = viewModel { UserViewModel() }
-private val controller: UserController= UserController() // -> Manejo de usuarios
-private var passwordMessage: String = "La contraseña cumple los requisitos"
-private var isValidEmail: String = "El email es válido"
+private val userController: UserController= UserController()
+private var passwordMessage: String = ""
+private var isValidEmail: String = ""
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -118,13 +119,10 @@ fun RegisterForm(navController: NavController){
     ) {
 
         // Name
-        var firstName by rememberSaveable {
+        var username by rememberSaveable {
             mutableStateOf("")
         }
-        // Last Name
-        var lastName by rememberSaveable {
-            mutableStateOf("")
-        }
+
         // Email
         var email by rememberSaveable {
             mutableStateOf("")
@@ -176,26 +174,20 @@ fun RegisterForm(navController: NavController){
                 // Create a user profile
                 // ----------------
 
-                // Name input
+                // Username input
                 TextField(
-                    value = firstName, onValueChange = { firstName = it },
-                    label = { Text( text = "First name", style = TextStyle.Default.copy(fontSize = 14.sp)) },
+                    value = username, onValueChange = { username = it },
+                    label = { Text( text = "Username", style = TextStyle.Default.copy(fontSize = 14.sp)) },
                     modifier = Modifier.padding(PaddingValues(bottom = 20.dp)),
                     singleLine = true)
 
-                // Last name input
-                TextField(
-                    value = lastName, onValueChange = { lastName = it },
-                    label = { Text( text = "Last name", style = TextStyle.Default.copy(fontSize = 14.sp)) },
-                    modifier = Modifier.padding(PaddingValues(bottom = 20.dp)),
-                    singleLine = true)
 
 
                 // Email input
                 // -----------
                 TextField(value = email, onValueChange = {
                     email = it
-                    if (controller.verifyEmail(email)){
+                    if (userController.verifyEmail(email)){
                         isValidEmail=""
                     } else { isValidEmail="* El email introducido no cumple con los requisitos."}},
                     label = { Text( text = "Email", style = TextStyle.Default.copy(fontSize = 14.sp)) },
@@ -203,7 +195,9 @@ fun RegisterForm(navController: NavController){
 
                 Column(
                     horizontalAlignment = Alignment.Start,
-                    modifier = Modifier.padding(PaddingValues(top=10.dp)).fillMaxWidth()
+                    modifier = Modifier
+                        .padding(PaddingValues(top = 10.dp))
+                        .fillMaxWidth()
                 ) {
                     Text(text = isValidEmail, style = TextStyle(color = colorResource(id = R.color.red)), modifier = Modifier.padding(PaddingValues(bottom = 30.dp, start = 20.dp)))
                 }
@@ -214,7 +208,7 @@ fun RegisterForm(navController: NavController){
                 // Create password
                 // ---------------
                 TextField(value = password, onValueChange = { password = it
-                    controller.checkPass(password, confirmPassword)},
+                    userController.checkPass(password, confirmPassword)},
                     label = { Text( text = "Password", style = TextStyle.Default.copy(fontSize = 14.sp))
                     }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     singleLine = true,
@@ -237,7 +231,7 @@ fun RegisterForm(navController: NavController){
                 // ----------------
                 TextField(value = confirmPassword, onValueChange = {
                     confirmPassword = it
-                    if (!controller.checkPass(password, confirmPassword)){
+                    if (!userController.checkPass(password, confirmPassword)){
                         passwordMessage = "* Las contraseñas no coinciden"
                     } else { passwordMessage = "" }},
                     label = { Text( text = "Confirm Password", style = TextStyle.Default.copy(fontSize = 14.sp)) },
@@ -246,7 +240,9 @@ fun RegisterForm(navController: NavController){
                     modifier = Modifier.padding(PaddingValues(top = 20.dp)),
                     visualTransformation = if (visiblePass) VisualTransformation.None else PasswordVisualTransformation())
 
-                Text(modifier = Modifier.padding(PaddingValues(top = 10.dp, start = 20.dp)).fillMaxWidth(),text = passwordMessage, style = TextStyle(color= colorResource(id = R.color.red)))
+                Text(modifier = Modifier
+                    .padding(PaddingValues(top = 10.dp, start = 20.dp))
+                    .fillMaxWidth(),text = passwordMessage, style = TextStyle(color= colorResource(id = R.color.red)))
                 // Validar que coinciden las contraseñas
 
 
@@ -273,17 +269,25 @@ fun RegisterForm(navController: NavController){
                 // ----------------------------------------------------------
                 val context=LocalContext.current
                 Button(
-                    onClick = { val isUp = controller.SignUp(
-                        email = email,
-                        pass = password,
-                        context = context,
-                        conditionalTerms = selected )
+                    onClick = {
+                        if(selected){
+                        val isUp = userController.SignUp(
+                            email = email,
+                            pass = password,
+                            context = context,
+                        )
                         // EValuar si se hizo el registro
-                        if (isUp){
+                        if (isUp) {
+
                             navController.navigate(AppScreens.LibraryScreen.route)
                         } else {
-
-                        }},
+                            Toast.makeText(context, "No se pudo crear usuario", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    } else {
+                        Toast.makeText(context, "Por favor acepta los términos y condiciones", Toast.LENGTH_SHORT).show()
+                    }
+                              },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.elevatedButtonColors(Color(0xFFFF5E94))
                 ) {
