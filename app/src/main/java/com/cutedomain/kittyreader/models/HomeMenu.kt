@@ -4,9 +4,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Person2
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Person2
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.cutedomain.kittyreader.screens.navigation.AppScreens
 
@@ -37,4 +39,16 @@ val items=listOf<NavigationItem>(
 
     // Inicio y registro de usuarios
     NavigationItem(title="Login", selectedIcon = Icons.Default.Person, unSelectedIcon = Icons.Outlined.Person, route=AppScreens.LoginScreen.route),
+)
+
+val itemsLogged = listOf<NavigationItem>(
+
+    NavigationItem(title="Home", selectedIcon = Icons.Default.Home, unSelectedIcon = Icons.Outlined.Home, route=AppScreens.LibraryScreen.route),
+
+    // Pantalla de estantería
+    NavigationItem(title="Books", selectedIcon = Icons.Default.Book, unSelectedIcon = Icons.Outlined.Book, route=AppScreens.LibraryScreen.route),
+
+    NavigationItem(title="Profile", selectedIcon = Icons.Default.Person2, unSelectedIcon = Icons.Outlined.Person2, route=AppScreens.ConfigScreen.route),
+
+
 )

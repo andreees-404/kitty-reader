@@ -147,6 +147,10 @@ fun RegisterForm(navController: NavController){
         var selected by rememberSaveable {
             mutableStateOf(false)
         }
+
+        val context=LocalContext.current
+
+
         // Main column
         Column(
             modifier = Modifier
@@ -267,23 +271,10 @@ fun RegisterForm(navController: NavController){
                     }
                 }
                 // ----------------------------------------------------------
-                val context=LocalContext.current
                 Button(
                     onClick = {
                         if(selected){
-                        val isUp = userController.SignUp(
-                            email = email,
-                            pass = password,
-                            context = context,
-                        )
-                        // EValuar si se hizo el registro
-                        if (isUp) {
-
-                            navController.navigate(AppScreens.LibraryScreen.route)
-                        } else {
-                            Toast.makeText(context, "No se pudo crear usuario", Toast.LENGTH_SHORT)
-                                .show()
-                        }
+                            userController.signUp(email.trim(), password.trim(), context)
                     } else {
                         Toast.makeText(context, "Por favor acepta los términos y condiciones", Toast.LENGTH_SHORT).show()
                     }

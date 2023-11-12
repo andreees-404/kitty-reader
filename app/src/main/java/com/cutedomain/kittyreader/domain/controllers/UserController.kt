@@ -1,29 +1,27 @@
 package com.cutedomain.kittyreader.domain.controllers
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
-import android.widget.Toast
-import com.cutedomain.kittyreader.domain.AuthActivity
+import com.cutedomain.kittyreader.MainActivity
 import com.cutedomain.kittyreader.domain.UserViewModel
-import com.cutedomain.kittyreader.screens.account.ShowErr
-import com.facebook.CallbackManager
+import com.cutedomain.kittyreader.domain.controllers.database.DatabaseController
 import com.google.firebase.auth.FirebaseAuth
 
 
 class UserController {
 
-
-
+    /* Necesario para el Logcat*/
     companion object {
         val TAG: String = "USER_CONTROLLER"
     }
 
-
-    private val auth = AuthActivity()
-    private val callback = CallbackManager.Factory.create()
+    private val mAuth = FirebaseAuth.getInstance()
     private lateinit var db: DatabaseController
     private lateinit var user: UserViewModel
 
+    
+    
     /*
     * Login con Firebase
     *
@@ -32,98 +30,98 @@ class UserController {
     * @param context Pantalla de inicio de sesión
     *
     * @return Si el usuario se autentica correctamente*/
-    internal fun SignIn(
-        email: String,
-        pass: String,
-        context: Context
-    ) : Boolean {
-        var login: Boolean = false
-        if (email.isNotEmpty() && pass.isNotEmpty()) {
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, pass)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        login = true
-                    } else ShowErr(
-                        context,
-                        "El usuario ingresado no es válido, vuelve a intentarlo."
-                    )
-                }
-            if (login) return true
+    internal fun signIn(email: String, password: String, context: Context){
 
-        } else {
-            ShowErr(context, "Los campos no pueden estar vacíos, por favor intenta otra vez.")
-            login = false
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
+            if (it.isSuccessful){
+                context.startActivity(Intent(context, MainActivity::class.java))
+            }
+            Log.d(TAG, "signIn: Logging...")
+        }.addOnFailureListener {
+            Log.d(TAG, "signIn: Login failed!")
+        }.addOnCanceledListener {
+            Log.d(TAG, "signIn: El usuario ha cancelado el login")
         }
-        return false
     }
 
-
+    
+    
     /*
     * Registrar nuevos usuarios con firebase
     *
-    * @param email
-    *   Dirección de correo electrónico del usuario
+    * @param email Dirección de correo electrónico del usuario
+    * @param pass Contraseña creada por el usuario
     *
-    * @param pass
-    *   Contraseña creada por el usuario
-    *
-    * @param context
-    *   Contexto de la pantalla actual
-    *
+    * @return Si el usuario ha sido registrado en Firebase
     *
     */
-    internal fun SignUp(
-        email: String,
-        pass: String,
-        context: Context,
-    ): Boolean {
-            var register = false
-
-            if (email.isNotEmpty() && pass.isNotEmpty() && verifyEmail(email)) {
-
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, pass)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Toast.makeText(context, "Usuario creado con éxito", Toast.LENGTH_SHORT).show()
-                            register = true
-
-
-                        } else {
-                            ShowErr(context, "El usuario o contraseña son inválidos, vuelve a intentarlo.")
-                            Log.d(TAG, "SignUp: Failed to create user")
-                        }
+    internal fun signUp(email: String, password: String, context: Context){
+        if (email.isNotEmpty() && password.isNotEmpty() && verifyEmail(email) && validatePass(password)) {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener {
+                    if (it.isSuccessful){
+                        Log.d(TAG, "signUp: User Created")
+                    } else {
+                        Log.d(TAG, "signUp: User was not created!")
                     }
-                if (register) return true
-            }
-
-        return false
+                }.addOnCanceledListener {
+                    Log.d(TAG, "SignUp: El usuario ha cancelado la operación...")
+                }
+        }
     }
 
-    // Función para validar email con expresiones regulares
+    /* Inspeccionar el email
+    * 
+    * @param email Correo electrónico del usuario
+    * 
+    * @return Si cumple los requisitos: tener @ y .<+2LETRAS>
+    */
     internal fun verifyEmail(email: String): Boolean{
         val regex = Regex("^[^@]+@[^@]+\\.[a-zA-Z]{2,}\$")
         return regex.matches(email)
     }
+    
+    
+    
+    /*
+    * Comprobar que las dos contraseñas sean iguales 
+    * y que no estén vacías
+    * 
+    * @param pass Contraseña original
+    * @param chkPass Confirmar la contraseña
+    * 
+    * @return Si son iguales
+    */
     internal fun checkPass(pass: String, chkPass: String) : Boolean{
-        return !(!pass.equals(chkPass) || ( pass.length > 8 || chkPass.length > 8) || ( pass.isEmpty() || chkPass.isEmpty()))
+        return (pass == chkPass && (pass.isNotEmpty() && chkPass.isNotEmpty()))
     }
 
-    // Login con Facebook
-    internal fun authFacebook() {
-        auth.facebookSignIn()
+    
+    /* Comprobar que la contraseña sea de mínimo 8 caracteres
+    *  y que tenga al menos una mayúscula y un número
+    * 
+    * @param password Contraseña del usuario
+    * 
+    * @return Si cumple los requisitos
+    * */
+    internal fun validatePass(password: String): Boolean{
+        if (password.trim().length >= 8) {
+            val passwordRegex = Regex("^(?=.*[0-9])(?=.*[A-Z]).+\$")
+            return passwordRegex.matches(password)
+        }
+        return false
     }
 
-    // Login con Google
-    internal fun authGoogle() {
-        auth.googleSignIn()
+    
+    /* Cerrar la sesíón actual
+    * 
+    * @param context Pantalla actual
+    */
+    internal fun signOut(context: Context) {
+        if(mAuth.currentUser != null){
+            mAuth.signOut()
+            context.startActivity(Intent(context, MainActivity::class.java))
+        }
     }
-    internal fun validatePass(pass: String): Boolean {
-        return !(pass.length > 8 || pass.isEmpty())
-    }
-
-    internal fun deleteUser(pass: String){
-        auth.removeUser(pass)
-    }
-
 
 }

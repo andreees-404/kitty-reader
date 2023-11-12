@@ -13,4 +13,12 @@ class UserViewModel : ViewModel() {
     val username: LiveData<String> = _username
     val email : LiveData<String> = _email
     val pass : LiveData<String> = _pass
+
+    fun setUsername(username: String){
+        _username.value = username
+    }
+
+    fun setEmail(email: String){
+        _email.value = email
+    }
 }

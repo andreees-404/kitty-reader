@@ -1,14 +1,12 @@
 package com.cutedomain.kittyreader.screens.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.screens.AnimateScreen
 import com.cutedomain.kittyreader.screens.ChooseFile
 import com.cutedomain.kittyreader.screens.ConfigScreen
-import com.cutedomain.kittyreader.screens.IntentScreen
 import com.cutedomain.kittyreader.screens.account.LoginScreen
 import com.cutedomain.kittyreader.screens.account.RegisterScreen
 import com.cutedomain.kittyreader.screens.library.LibraryScreen
@@ -16,7 +14,7 @@ import com.cutedomain.kittyreader.screens.library.LibraryScreen
 
 // En este archivo navegaremos entre las pantallas
 @Composable
-fun AppNavigation(){
+fun AppNavigation(currentUser: String){
     val navController=rememberNavController()
 
     NavHost(navController =navController , startDestination = AppScreens.LibraryScreen.route){
@@ -27,13 +25,13 @@ fun AppNavigation(){
             RegisterScreen(navController)
         }
         composable(route=AppScreens.LibraryScreen.route){
-            LibraryScreen(navController)
+            if (currentUser == null){
+                LibraryScreen(navController, "")
+            }
+            LibraryScreen(navController, currentUser)
         }
         composable(route=AppScreens.AnimateSplashScreen.route){
             AnimateScreen(navController)
-        }
-        composable(route=AppScreens.IntentScreen.route){
-            IntentScreen(navController, LocalContext.current)
         }
         composable(route=AppScreens.ConfigScreen.route){
             ConfigScreen(navController)

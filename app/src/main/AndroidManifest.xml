@@ -40,7 +40,7 @@
             android:label="EpubReader"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".domain.AuthActivity"
+            android:name=".domain.controllers.auth.AuthActivity"
             android:exported="false" />
 
         <meta-data

@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.domain.controllers;
+package com.cutedomain.kittyreader.domain.controllers.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.google.android.gms.common.api.internal.IStatusCallback;
 
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.ls.LSParserFilter;
 
 import java.util.Date;
@@ -35,13 +36,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public static final String date_col = "category";
     private static final String year_col = "year";
 
-    /* Table users
-    * */
-    public static final String users_table = "users";
-    public static final String primary_key_users = "user_id";
-    public static final String username_col = "username";
-    public static final String email_col = "email";
-    public static final String dateCreated = "date_created";
+
 
 
     public DatabaseController(Context context){
@@ -62,15 +57,9 @@ public class DatabaseController extends SQLiteOpenHelper {
                 category_col + " TEXT," +
                 date_col +" TEXT)";
 
-        String usersTableQuery = "CREATE TABLE " + users_table + "(" +
-                primary_key_users + " integer primary key AUTOINCREMENT," +
-                username_col + " TEXT NOT NULL," +
-                email_col + " TEXT NOT NULL," +
-                dateCreated + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
 
         try {
             db.execSQL(booksTableQuery);
-            db.execSQL(usersTableQuery);
             Log.d(TAG, "onCreate: Tables created successfully");
         } catch (SQLException e){
             Log.d(TAG, "onCreate: SQL not executed");
@@ -112,19 +101,20 @@ public class DatabaseController extends SQLiteOpenHelper {
         }
     }
 
-    public int addUser(String username, String email) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
 
-        try{
-            values.put(username_col, username);
-            values.put(email, email_col);
 
-            db.insert(users_table, null, values);
-            return 1;
-        } catch (Exception e){
-            e.printStackTrace();
-            return -1;
+
+
+    /*
+    * Preguntar en la base de datos local por el usuario
+    * */
+    public void selectBooks() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        try {
+
+        } catch (SQLException exception){
+            exception.printStackTrace();
         }
     }
 }

@@ -22,6 +22,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -55,6 +57,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,11 +65,16 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
 import com.cutedomain.kittyreader.domain.controllers.FileHandler
+import com.cutedomain.kittyreader.domain.controllers.UserController
 import com.cutedomain.kittyreader.models.DataProvider
 import com.cutedomain.kittyreader.models.EBook
 import com.cutedomain.kittyreader.models.items
+import com.cutedomain.kittyreader.models.itemsLogged
 import com.cutedomain.kittyreader.screens.navigation.AppScreens
 import kotlinx.coroutines.launch
+
+
+val userController = UserController()
 
 /*
 * Pantalla principal de la librería
@@ -76,7 +84,7 @@ import kotlinx.coroutines.launch
 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreen(navController: NavController){
+fun LibraryScreen(navController: NavController, userEmail: String){
     // Local context
     val context = LocalContext.current
     // Reader
@@ -86,6 +94,8 @@ fun LibraryScreen(navController: NavController){
     // Escupo
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    var isOpen = false
     var selectedItemIndex by rememberSaveable {
         mutableStateOf(0)
     }
@@ -99,13 +109,19 @@ fun LibraryScreen(navController: NavController){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Header")
+                    Row(modifier = Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(imageVector = Icons.Default.Person, contentDescription = null, modifier = Modifier.size(48.dp))
+                        Text(text = userEmail, fontWeight = FontWeight.Bold)
+                    }
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+            if(userEmail == "Anónimo" || userEmail == "null"){
             // Iteramos en la lista de elementos
-            items.forEachIndexed{
-                    index, item ->
-                NavigationDrawerItem(label = { Text(text = item.title) },
+            items.forEachIndexed { index, item ->
+                NavigationDrawerItem(
+                    label = { Text(text = item.title) },
                     selected = index == selectedItemIndex,
                     onClick = {
                         selectedItemIndex = index
@@ -114,14 +130,48 @@ fun LibraryScreen(navController: NavController){
                     },
                     icon = {
                         Icon(
-                            imageVector = if (index==selectedItemIndex) item.selectedIcon else item.unSelectedIcon,
-                            contentDescription = item.title)
+                            imageVector = if (index == selectedItemIndex) item.selectedIcon else item.unSelectedIcon,
+                            contentDescription = item.title
+                        )
                     },
                     badge = {
                         item.badgeCount?.let { Text(text = item.badgeCount.toString()) }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
+            }
+            } else {
+                itemsLogged.forEachIndexed { index, item ->
+                    NavigationDrawerItem(
+                        label = { Text(text = item.title) },
+                        selected = index == selectedItemIndex,
+                        onClick = {
+                            selectedItemIndex = index
+                            scope.launch { drawerState.close() }
+                            navController.navigate(item.route)
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = if (index == selectedItemIndex) item.selectedIcon else item.unSelectedIcon,
+                                contentDescription = item.title
+                            )
+                        },
+                        badge = {
+                            item.badgeCount?.let { Text(text = item.badgeCount.toString()) }
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    )
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Button(onClick = { userController.signOut(context) }) {
+                    Text(text = "Cerrar Sesión")
+                }
+
+                }
             }
         }
     },
@@ -134,7 +184,9 @@ fun LibraryScreen(navController: NavController){
                     onClick = {
                         // Hacer click en el menú
                         scope.launch {
-                            drawerState.open()
+                            isOpen = !isOpen
+                            if (isOpen){
+                                drawerState.open() } else { drawerState.close() }
                         }
                     }
                 )
@@ -345,5 +397,5 @@ fun AddButton(onClick: () -> Unit){
 @Preview(showBackground = true)
 @Composable
 fun BookListPreview(){
-    LibraryScreen(navController = rememberNavController())
+    LibraryScreen(navController = rememberNavController(), "test@test.com1")
 }

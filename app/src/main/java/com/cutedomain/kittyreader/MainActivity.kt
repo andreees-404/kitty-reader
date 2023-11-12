@@ -35,6 +35,7 @@ import com.cutedomain.kittyreader.screens.navigation.AppNavigation
 import com.cutedomain.kittyreader.ui.theme.KittyReaderTheme
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity(){
     private companion object {
@@ -42,6 +43,8 @@ class MainActivity : ComponentActivity(){
         private const val STORAGE_PERMISSION_CODE = 100
     }
 
+
+    private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     private val grantedPerms = ArrayList<String>()
     private var deniedPerms = ArrayList<String>()
@@ -81,13 +84,20 @@ class MainActivity : ComponentActivity(){
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
+        val currentUser = mAuth.currentUser?.email
 
         // Full App
         installSplashScreen()
        setContent {
            KittyReaderTheme {
                 if (checkPermissions(storagePermissions)){
-                    AppNavigation()
+                    if(currentUser != null){
+                        AppNavigation(currentUser.toString())
+                    }
+                    else {
+
+                        AppNavigation("Anónimo")
+                    }
                 }
                else {
                    toast("Request perms...")
@@ -102,7 +112,7 @@ class MainActivity : ComponentActivity(){
     @Preview
     @Composable
     private fun MainPreview(){
-        AppNavigation()
+        AppNavigation("test@test.com")
     }
 
     /*
