@@ -139,10 +139,10 @@ public class EpubActivity extends AppCompatActivity {
                     Log.d(TAG, "onFilePathRecivedListener: successful");
 
                     // Mostrar el libro
-                    //openBook(path);
+                    openBook(path);
 
                     // Mostrar el contenido
-                    //showPage(currentPage);
+                    showPage(currentPage);
                 } else {
                     Log.d(TAG, "onFilePathRecivedListener: no such file or directory!");
                 }
@@ -235,31 +235,24 @@ public class EpubActivity extends AppCompatActivity {
      *  El libro debe estar en la carpeta /kittyreader/books
      * */
     private void getFilePath() {
+
+        try {
         launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
 
             @Override
             public void onActivityResult(Uri o) {
                 if (o != null) {
-                    //System.out.println();
-                    //DocumentFile documentFile = DocumentFile.fromSingleUri(EpubActivity.this, o);
-                    //
-                    //
-                    //String filename = getNameFromUri(o);
-                    //if (filename != null) {
-                    //    System.out.println("Nombre del archivo -> " + filename);
-                    //    bookPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_DIR + BOOKS_DIR + "/" + filename;
-                    //    System.out.println("Path ->" + bookPath);
-                    //    Log.d(TAG, "onActivityResult: File -> " + bookPath);
-                    //    if (pathListener != null) {
-                    //        pathListener.onFilePathRecivedListener(bookPath);
-                    //    }
-                    //}
                     String path = FileUtil.getRealPathFromURI(getApplicationContext(), o);
                     Log.d(TAG, "onActivityResult: " + path);
+                    try {
+                        pathListener.onFilePathRecivedListener(path);
+                    } catch(Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
         });
-        try {
+
             launcher.launch("*/*");
         } catch (Exception e) {
             Log.d(TAG, "getFilePath: Error!");
@@ -315,18 +308,22 @@ public class EpubActivity extends AppCompatActivity {
      *
      */
     private void showPage(int pageIndex) {
-        if (book != null && pageIndex >= 0 && pageIndex < book.getContents().size()) {
-            Resource page = book.getContents().get(pageIndex);
-            if(page != null && coverImage != null) {
-                setContentView(page, coverPage);
+        try {
+            if (book != null && pageIndex >= 0 && pageIndex < book.getContents().size()) {
+                Resource page = book.getContents().get(pageIndex);
+                if (page != null && coverImage != null) {
+                    setContentView(page, coverPage);
 
-                // Cargar el título del libro
-                pageTitle.setText(book.getTitle());
+                    // Cargar el título del libro
+                    pageTitle.setText(book.getTitle());
 
 
-            } else {
-                Log.d(TAG, "showPage: Error with page or cover page...");
+                } else {
+                    Log.d(TAG, "showPage: Error with page or cover page...");
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -363,43 +360,6 @@ public class EpubActivity extends AppCompatActivity {
         }
     }
 
-
-
-    /*
-     * Obtener el nombre del arrchivo desde una uri
-     *
-     * @param uri
-     *   Identifica el recurso
-     */
-    private String getNameFromUri(Uri uri) {
-        String filename = null;
-        ContentResolver contentResolver = getContentResolver();
-
-        Cursor cursor = contentResolver.query(uri, null, null, null, null);
-        if (cursor != null) {
-            try {
-                if (cursor.moveToFirst()) {
-                    int displayNameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    // Nombre del archivo -> DISPLAY_NAME
-                    String displayName = cursor.getString(displayNameIndex);
-
-                    if (displayName != null) {
-                        filename = displayName;
-                    } else {
-                        String lastPathSegment = uri.getLastPathSegment();
-                        if (lastPathSegment != null) {
-                            // Si DISPLAY_NAME no está disponible, intentamos obtenerlo
-                            // a partir del último segmento de la uri
-                            filename = new File(lastPathSegment).getName();
-                        }
-                    }
-                }
-            } finally {
-                cursor.close();
-            }
-        }
-        return filename;
-    }
 
 
     private void toast(String message) {

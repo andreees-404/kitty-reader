@@ -7,15 +7,15 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- Dar de baja el permiso de identificador del anunciante -->
     <uses-permission
         android:name="com.google.android.gms.permission.AD_ID"
-        tools:node="remove" />
+        tools:node="remove" /> <!-- MapBox permissions -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -28,9 +28,21 @@
         android:theme="@style/Theme.KittyReader.SplashScreen"
         tools:targetApi="31">
         <activity
-            android:name=".domain.ReaderActivity"
+            android:name=".domain.MapsActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:label="@string/title_activity_maps"
+            android:theme="@style/Theme.KittyReader.SplashScreen" />
+        <activity
+            android:name=".domain.GPSActivity"
+            android:exported="false"
+            android:label="@string/title_activity_gpsactivity"
+            android:theme="@style/Theme.KittyReader.SplashScreen" />
+        <activity
+            android:name=".domain.SensorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".domain.GpsActivity"
+            android:exported="false" />
         <activity
             android:name=".domain.UploadActivity"
             android:exported="false" />

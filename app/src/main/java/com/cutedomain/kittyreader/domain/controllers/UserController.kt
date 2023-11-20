@@ -70,6 +70,8 @@ class UserController {
         }
     }
 
+
+
     /* Inspeccionar el email
     * 
     * @param email Correo electrónico del usuario
@@ -96,7 +98,8 @@ class UserController {
         return (pass == chkPass && (pass.isNotEmpty() && chkPass.isNotEmpty()))
     }
 
-    
+
+
     /* Comprobar que la contraseña sea de mínimo 8 caracteres
     *  y que tenga al menos una mayúscula y un número
     * 
@@ -111,6 +114,7 @@ class UserController {
         }
         return false
     }
+
 
     
     /* Cerrar la sesíón actual

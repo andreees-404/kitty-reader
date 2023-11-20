@@ -14,18 +14,13 @@ package com.cutedomain.kittyreader
 * */
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
@@ -53,7 +48,6 @@ class MainActivity : ComponentActivity(){
         listOf(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.MANAGE_EXTERNAL_STORAGE,
             Manifest.permission.INTERNET)
     } else {
         listOf(
@@ -63,25 +57,15 @@ class MainActivity : ComponentActivity(){
         )
     }
 
-    private val permissionsLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            if (Environment.isExternalStorageManager()){
-                Log.d(TAG, "permissionsLauncher: Permissions granted")
-                toast("External storage permissions granted!")
-            }
-        } else {
-            Log.d(TAG, "permissionsLauncher: Permissions denied ")
-            toast("External storage permissions denied!")
-        }
-    }
+
+    private var isAllGranted = false
+
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Iniciar el SDK de Facebook
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        FacebookSdk.sdkInitialize(this.applicationContext);
         AppEventsLogger.activateApp(this);
 
         val currentUser = mAuth.currentUser?.email
@@ -90,18 +74,17 @@ class MainActivity : ComponentActivity(){
         installSplashScreen()
        setContent {
            KittyReaderTheme {
-                if (checkPermissions(storagePermissions)){
+               if (isAllGranted){
                     if(currentUser != null){
                         AppNavigation(currentUser.toString())
                     }
                     else {
-
                         AppNavigation("Anónimo")
                     }
-                }
-               else {
+                } else {
                    toast("Request perms...")
                    requestPerms()
+                   AppNavigation("Anónimo")
                }
 
            }
@@ -120,10 +103,6 @@ class MainActivity : ComponentActivity(){
     * @return Si los permisos han sido aceptados o rechazados
     */
     private fun checkPermissions(permissions: List<String>): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // This line return true or false
-            Environment.isExternalStorageManager()
-        } else {
             // Sobre Android 11(R)
             for (i in permissions) {
                 if (ContextCompat.checkSelfPermission(this, i) != PackageManager.PERMISSION_GRANTED
@@ -139,7 +118,7 @@ class MainActivity : ComponentActivity(){
             }
 
             return false
-        }}
+        }
 
 
 
@@ -150,16 +129,14 @@ class MainActivity : ComponentActivity(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             try {
                 Log.d(TAG, "request permissions: try")
-                val intent = Intent()
-                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                val uri = Uri.fromParts("package", this.packageName, null)
-                intent.data = uri
-                permissionsLauncher.launch(intent)
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
+                    STORAGE_PERMISSION_CODE
+                )
             } catch (e: Exception){
-                Log.d(TAG, "request permissions: ", e)
-                val intent = Intent()
-                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                permissionsLauncher.launch(intent)
+                Log.d(TAG, "request permissions: Request failed")
+
 
             }
         } else {
@@ -183,7 +160,7 @@ class MainActivity : ComponentActivity(){
 
                 if (write && read){
                     Log.d(TAG, "requestPermissionResult: Permissions granted")
-
+                    isAllGranted = true
                 } else {
                     Log.d(TAG, "requestPermissionResult: External storage permissions denied")
                     toast("External storage permissions denied!")

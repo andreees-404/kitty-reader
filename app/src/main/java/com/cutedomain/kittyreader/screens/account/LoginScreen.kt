@@ -4,7 +4,6 @@ package com.cutedomain.kittyreader.screens.account
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -207,15 +206,11 @@ fun LoginForm(navController: NavController){
             Button(
                 onClick = {
                     if (userController.verifyEmail(email)){
-                        if (userController.signIn(email.trim(), pass.trim(), context)){
-                            navController.navigate(AppScreens.LibraryScreen.route)
-                    } else {
-                        Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
-                    }
-                    } else {
-                        Toast.makeText(context, "Invalid Email", Toast.LENGTH_SHORT).show()
-                    }
+                        userController.signIn(email.trim(), pass.trim(), context)
+                        navController.navigate(AppScreens.LibraryScreen.route)
+                            }
                           },
+
                 contentPadding = PaddingValues(
                     start = 20.dp,
                     top = 12.dp,

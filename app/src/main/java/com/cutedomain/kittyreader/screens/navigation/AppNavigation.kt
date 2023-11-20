@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.screens.AnimateScreen
 import com.cutedomain.kittyreader.screens.ChooseFile
 import com.cutedomain.kittyreader.screens.ConfigScreen
+import com.cutedomain.kittyreader.screens.GPScreen
 import com.cutedomain.kittyreader.screens.account.LoginScreen
 import com.cutedomain.kittyreader.screens.account.RegisterScreen
 import com.cutedomain.kittyreader.screens.library.LibraryScreen
@@ -38,6 +39,9 @@ fun AppNavigation(currentUser: String){
         }
         composable(route=AppScreens.ChooseFile.route){
             ChooseFile(navController)
+        }
+        composable(route=AppScreens.GPScreen.route){
+            GPScreen(navController)
         }
     }
 }

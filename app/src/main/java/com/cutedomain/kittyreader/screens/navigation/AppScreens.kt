@@ -12,5 +12,6 @@ sealed class AppScreens(val route: String){
     object IntentScreen: AppScreens(route = "intent_screen")
     object BookScreen: AppScreens(route= "reader_screen")
     object ChooseFile: AppScreens(route = "choose_files")
+    object GPScreen: AppScreens(route = "screen_gps")
 
 }

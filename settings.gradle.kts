@@ -5,6 +5,10 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+val keyProps = java.util.Properties().apply{
+    file("gradle.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -13,6 +17,8 @@ dependencyResolutionManagement {
         jcenter()
         maven(url=uri("https://jitpack.io"))
         maven(url="https://github.com/psiegman/mvn-repo/raw/master/releases")
+
+
     }
 
 }

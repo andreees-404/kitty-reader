@@ -12,10 +12,11 @@ android {
 
     defaultConfig {
         applicationId = "com.cutedomain.kittyreader"
-        minSdk = 22
+        minSdk = 23
         targetSdk = 34
-        versionCode = 2
-        versionName = "0.0.1"
+        versionCode = 3
+        versionName = "0.0.2"
+
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -75,12 +76,16 @@ dependencies {
 
     // Dependencia de navegación
     implementation ("androidx.navigation:navigation-compose:2.7.1")
+    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
@@ -142,5 +147,9 @@ dependencies {
         exclude(group="xmlpull")
     }
     implementation("org.slf4j:slf4j-android:1.7.25")
+
+
+
+    implementation("org.osmdroid:osmdroid-android:6.1.14")
 
 }
