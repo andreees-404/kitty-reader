@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader
+package com.cutedomain.kittyreader.views
 /*
 * @version: 0.0.5
 * @author: Andrestio404

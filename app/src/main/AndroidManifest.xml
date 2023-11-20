@@ -28,7 +28,7 @@
         android:theme="@style/Theme.KittyReader.SplashScreen"
         tools:targetApi="31">
         <activity
-            android:name=".domain.MapsActivity"
+            android:name=".views.MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps"
             android:theme="@style/Theme.KittyReader.SplashScreen" />
@@ -47,7 +47,7 @@
             android:name=".domain.UploadActivity"
             android:exported="false" />
         <activity
-            android:name=".domain.EpubActivity"
+            android:name=".views.EpubActivity"
             android:exported="false"
             android:label="EpubReader"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -78,12 +78,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".domain.PdfActivity"
+            android:name=".views.PdfActivity"
             android:exported="true"
             android:label="KittyReader"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
-            android:name=".MainActivity"
+            android:name=".views.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.KittyReader.SplashScreen">

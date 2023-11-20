@@ -2,9 +2,9 @@ package com.cutedomain.kittyreader.domain.controllers
 
 import android.content.Context
 import android.content.Intent
-import com.cutedomain.kittyreader.MainActivity
-import com.cutedomain.kittyreader.domain.EpubActivity
-import com.cutedomain.kittyreader.domain.PdfActivity
+import com.cutedomain.kittyreader.views.MainActivity
+import com.cutedomain.kittyreader.views.EpubActivity
+import com.cutedomain.kittyreader.views.PdfActivity
 import com.cutedomain.kittyreader.domain.UploadActivity
 
 @Suppress("IMPLICIT_CAST_TO_ANY")

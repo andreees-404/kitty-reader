@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +29,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -248,6 +250,16 @@ fun LoginForm(navController: NavController){
                 modifier= Modifier.padding(PaddingValues(bottom=40.dp))
             )
 
+
+            OutlinedButton(onClick = { navController.navigate(AppScreens.GPScreen.route) },
+                colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(PaddingValues(start = 50.dp, end = 50.dp, bottom = 10.dp)),
+                shape = RoundedCornerShape(50)
+                ) {
+                Text(text = "Mostrar ubicación", modifier = Modifier.padding(PaddingValues(start = 10.dp)), style = TextStyle(color = colorResource(R.color.black)))
+            }
             // Iniciar sesión con Google
             //OutlinedButton(onClick = { userController.authFacebook() },
             //    colors = ButtonDefaults.elevatedButtonColors(colorResource(id = R.color.transparent)),

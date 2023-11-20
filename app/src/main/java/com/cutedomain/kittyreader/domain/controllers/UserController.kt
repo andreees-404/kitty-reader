@@ -3,7 +3,7 @@ package com.cutedomain.kittyreader.domain.controllers
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.cutedomain.kittyreader.MainActivity
+import com.cutedomain.kittyreader.views.MainActivity
 import com.cutedomain.kittyreader.domain.UserViewModel
 import com.cutedomain.kittyreader.domain.controllers.database.DatabaseController
 import com.google.firebase.auth.FirebaseAuth

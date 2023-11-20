@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.domain
+package com.cutedomain.kittyreader.views
 
 import android.Manifest
 import android.graphics.Rect

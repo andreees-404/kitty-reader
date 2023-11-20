@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.domain
+package com.cutedomain.kittyreader.views
 
 import android.os.Bundle
 import android.util.Log

@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.domain;
+package com.cutedomain.kittyreader.views;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;

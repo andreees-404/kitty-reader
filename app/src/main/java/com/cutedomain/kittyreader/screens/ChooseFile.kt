@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
-import com.cutedomain.kittyreader.domain.EpubActivity
-import com.cutedomain.kittyreader.domain.PdfActivity
+import com.cutedomain.kittyreader.views.EpubActivity
+import com.cutedomain.kittyreader.views.PdfActivity
 import com.cutedomain.kittyreader.models.DataProvider
 import com.cutedomain.kittyreader.models.Formats
 

@@ -6,7 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.cutedomain.kittyreader.domain.MapsActivity
+import com.cutedomain.kittyreader.views.MapsActivity
 
 @Composable
 fun GPScreen(navController: NavController){

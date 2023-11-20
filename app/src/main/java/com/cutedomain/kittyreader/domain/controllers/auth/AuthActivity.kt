@@ -3,7 +3,7 @@ package com.cutedomain.kittyreader.domain.controllers.auth
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.cutedomain.kittyreader.MainActivity
+import com.cutedomain.kittyreader.views.MainActivity
 import com.facebook.CallbackManager
 import com.google.firebase.auth.FirebaseAuth
 
