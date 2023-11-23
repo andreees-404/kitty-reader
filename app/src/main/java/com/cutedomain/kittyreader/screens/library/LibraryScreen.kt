@@ -1,6 +1,7 @@
 package com.cutedomain.kittyreader.screens.library
 
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -64,8 +65,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
-import com.cutedomain.kittyreader.domain.controllers.FileHandler
+import com.cutedomain.kittyreader.domain.controllers.StoragePermissionsActivity
 import com.cutedomain.kittyreader.domain.controllers.UserController
+import com.cutedomain.kittyreader.domain.utils.FileHandler
 import com.cutedomain.kittyreader.models.DataProvider
 import com.cutedomain.kittyreader.models.EBook
 import com.cutedomain.kittyreader.models.items
@@ -74,8 +76,13 @@ import com.cutedomain.kittyreader.screens.navigation.AppScreens
 import kotlinx.coroutines.launch
 
 
-val userController = UserController()
 
+
+
+
+
+val userController = UserController()
+val emailUser = "test@test.com"
 /*
 * Pantalla principal de la librería
 *
@@ -84,7 +91,7 @@ val userController = UserController()
 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreen(navController: NavController, userEmail: String){
+fun LibraryScreen(navController: NavController){
     // Local context
     val context = LocalContext.current
     // Reader
@@ -109,15 +116,17 @@ fun LibraryScreen(navController: NavController, userEmail: String){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                    Row(modifier = Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp), verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(imageVector = Icons.Default.Person, contentDescription = null, modifier = Modifier.size(48.dp))
-                        Text(text = userEmail, fontWeight = FontWeight.Bold)
+                        Text(text = emailUser, fontWeight = FontWeight.Bold)
                     }
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            if(userEmail == "Anónimo" || userEmail == "null"){
+            if(emailUser == "Anónimo"){
             // Iteramos en la lista de elementos
             items.forEachIndexed { index, item ->
                 NavigationDrawerItem(
@@ -246,10 +255,11 @@ fun BookList(context: Context, books: List<EBook>, innerPadding: PaddingValues) 
                             Toast
                                 .makeText(
                                     context,
-                                    "Click en card ${bookItem.isbn}",
+                                    "Formato:  ${bookItem.format}",
                                     Toast.LENGTH_SHORT
                                 )
                                 .show()
+                            openBook(context, bookItem.format)
                         },
                     colors=CardDefaults.cardColors(colorResource(id = R.color.card_description)),
                     elevation = CardDefaults.cardElevation(8.dp)
@@ -266,6 +276,13 @@ fun BookList(context: Context, books: List<EBook>, innerPadding: PaddingValues) 
             }
         }
     }
+}
+
+private fun openBook(context: Context, format: String) {
+   Intent(context, StoragePermissionsActivity::class.java).also{
+       it.putExtra("type", format)
+       context.startActivity(it)
+   }
 }
 
 
@@ -292,7 +309,6 @@ fun BookList(context: Context, books: List<EBook>, innerPadding: PaddingValues) 
 */
 @Composable
 fun BookCard(isbn: String, title: String, author: String, date: String, category: String, image: Int) {
-    // All variables
 
     // Book progress
     val currentProgress by remember { mutableStateOf(0f) }
@@ -397,5 +413,5 @@ fun AddButton(onClick: () -> Unit){
 @Preview(showBackground = true)
 @Composable
 fun BookListPreview(){
-    LibraryScreen(navController = rememberNavController(), "test@test.com1")
+    LibraryScreen(navController = rememberNavController())
 }

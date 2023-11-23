@@ -1,5 +1,7 @@
 package com.cutedomain.kittyreader.models;
 
+import android.net.Uri;
+
 public class Book {
 
     private String title;

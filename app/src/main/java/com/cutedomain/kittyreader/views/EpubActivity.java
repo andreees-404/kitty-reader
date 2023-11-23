@@ -5,19 +5,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.documentfile.provider.DocumentFile;
 
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.res.AssetManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.OpenableColumns;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -25,7 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cutedomain.kittyreader.R;
-import com.cutedomain.kittyreader.domain.controllers.FileUtil;
+import com.cutedomain.kittyreader.domain.utils.FileUtil;
+import com.cutedomain.kittyreader.domain.utils.MyOnTouchListener;
 import com.cutedomain.kittyreader.domain.utils.OnFilePathRecivedListener;
 import com.cutedomain.kittyreader.models.EBookJTest;
 
@@ -77,10 +72,7 @@ public class EpubActivity extends AppCompatActivity {
     private TextView pageTitle;
     private int currentPage = 1;
     private Resource coverImage;
-
-    // Necesario para manejar los gestos
-    private boolean isZooming;
-
+    private float INITIAL_ZOOM_SCALE = 1.0f;
 
     @SuppressLint({"ClickableViewAccessibility", "MissingInflatedId"})
     @Override
@@ -100,38 +92,43 @@ public class EpubActivity extends AppCompatActivity {
         pageContent.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         pageTitle = findViewById(R.id.pageTitle);
 
-        copyFromAssets("El_libro_de_Enoc-Anonimo.epub", BOOKS_DIR);
+        MyOnTouchListener listener = new MyOnTouchListener(this, this, pageContent);
+        pageContent.setOnTouchListener(listener);
 
-        pageContent.setOnTouchListener(new View.OnTouchListener() {
-            private float startX;
 
-            // Distancia mínima a deslizar por la pantalla
-            public static final float MIN_SWIPE_DISTANCE = 500;
 
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                    startX = event.getX();
-                    break;
+        //pageContent.setOnTouchListener(new View.OnTouchListener() {
+        //    private float startX;
 
-                    case MotionEvent.ACTION_UP:
-                        float endX = event.getX();
-                        float deltaX = endX - startX;
+        //    // Distancia mínima a deslizar por la pantalla
+        //    public static final float MIN_SWIPE_DISTANCE = 500;
 
-                        if (Math.abs(deltaX) > MIN_SWIPE_DISTANCE){
-                            if (deltaX > 0){
-                                showBackPage();
-                            } else {
-                                showNextPage();
-                            }
-                        }
-                        break;
-                }
-                return false;
-            }
-        });
+
+
+        //    @SuppressLint("ClickableViewAccessibility")
+        //    @Override
+        //    public boolean onTouch(View v, MotionEvent event) {
+        //        switch (event.getAction()){
+        //            case MotionEvent.ACTION_DOWN:
+        //            startX = event.getX();
+        //            break;
+
+        //            case MotionEvent.ACTION_UP:
+        //                float endX = event.getX();
+        //                float deltaX = endX - startX;
+
+        //                if (Math.abs(deltaX) > MIN_SWIPE_DISTANCE){
+        //                    if (deltaX > 0){
+        //                        showBackPage();
+        //                    } else {
+        //                        showNextPage();
+        //                    }
+        //                }
+        //                break;
+        //        }
+        //        return false;
+        //    }
+        //});
         pathListener = new OnFilePathRecivedListener() {
             @Override
             public void onFilePathRecivedListener(String path) {
@@ -165,7 +162,7 @@ public class EpubActivity extends AppCompatActivity {
     /*
      * Mostrar la página siguiente a la actual
      * */
-    private void showNextPage() {
+    public void showNextPage() {
         if (currentPage < book.getContents().size() -1){
             currentPage++;
             showPage(currentPage);
@@ -175,12 +172,21 @@ public class EpubActivity extends AppCompatActivity {
     /*
      * Mostrar la página anterior a la actual
      *  */
-    private void showBackPage() {
+    public void showBackPage() {
         if (currentPage > 0){
             currentPage--;
             showPage(currentPage);
         }
 
+    }
+
+    public void resetZoom(){
+        WebSettings settings = pageContent.getSettings();
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        pageContent.setInitialScale((int) (INITIAL_ZOOM_SCALE * 100));
+        Toast.makeText(pageContent.getContext(), "Zoom reset", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -235,13 +241,13 @@ public class EpubActivity extends AppCompatActivity {
      *  El libro debe estar en la carpeta /kittyreader/books
      * */
     private void getFilePath() {
-
         try {
         launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
 
             @Override
             public void onActivityResult(Uri o) {
                 if (o != null) {
+                    Log.d(TAG, "onActivityResult: uri " + o.getAuthority());
                     String path = FileUtil.getRealPathFromURI(getApplicationContext(), o);
                     Log.d(TAG, "onActivityResult: " + path);
                     try {
@@ -323,6 +329,7 @@ public class EpubActivity extends AppCompatActivity {
                 }
             }
         }catch (Exception e){
+            Log.d(TAG, "showPage: Error!");
             e.printStackTrace();
         }
     }

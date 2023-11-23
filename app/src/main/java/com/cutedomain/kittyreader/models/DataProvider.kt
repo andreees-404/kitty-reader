@@ -6,8 +6,8 @@ object DataProvider {
 
     /* Lista de libros temporal para hacer pruebas funcionales */
     val bookList= listOf(
-        EBook(isbn="1346786432456", title ="El libro de Enoc", author = "Anónimo",date="1992", category = "Religión", image = R.drawable.el_libro_de_enoc_anonimo_lg),
-        EBook(isbn="3454675768543", title ="The Godfather", author = "Mario Puzzo",date="1969", category = "Novela", image=R.drawable.thegodfather_llogo)
+        EBook(isbn="1346786432456", title ="El libro de Enoc", author = "Anónimo",date="1992", category = "Religión", image = R.drawable.el_libro_de_enoc_anonimo_lg, format = "epub"),
+        EBook(isbn="3454675768543", title ="The Godfather", author = "Mario Puzzo",date="1969", category = "Novela", image=R.drawable.thegodfather_llogo, format = "pdf")
 
     )
 

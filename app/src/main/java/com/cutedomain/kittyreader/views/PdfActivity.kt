@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.cutedomain.kittyreader.databinding.ActivityPdfBinding
-import com.cutedomain.kittyreader.domain.controllers.FileHandler
+import com.cutedomain.kittyreader.domain.utils.FileHandler
 
 class PdfActivity : AppCompatActivity() {
 

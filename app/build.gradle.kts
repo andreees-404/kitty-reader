@@ -132,8 +132,8 @@ dependencies {
 
 
     // Google OAuth
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.facebook.android:facebook-android-sdk:[4,5)")
+    //implementation("com.google.android.gms:play-services-auth:20.7.0")
+    //implementation("com.facebook.android:facebook-android-sdk:[4,5)")
 
     // PDF Viewer
     implementation("com.github.barteksc:android-pdf-viewer:2.8.2")
