@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.models
+package com.cutedomain.kittyreader.models.data
 
 data class Formats(
     val name: String,

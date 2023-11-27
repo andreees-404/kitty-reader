@@ -3,6 +3,7 @@ package com.cutedomain.kittyreader.domain.utils;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 
 import com.cutedomain.kittyreader.views.EpubActivity;
+
+import java.util.function.LongToDoubleFunction;
 
 public class MyOnTouchListener implements View.OnTouchListener{
 
@@ -28,10 +31,11 @@ public class MyOnTouchListener implements View.OnTouchListener{
 
     }
 
+
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         scaleGestureDetector.onTouchEvent(event);
-
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 startX = event.getX();
@@ -66,10 +70,11 @@ public class MyOnTouchListener implements View.OnTouchListener{
 
 
     }
-    private class ScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
+    private static class ScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         @Override
         public boolean onScale(@NonNull ScaleGestureDetector detector) {
             return super.onScale(detector);
         }
+
     }
 }

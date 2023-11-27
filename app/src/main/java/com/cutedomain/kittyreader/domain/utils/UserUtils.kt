@@ -1,27 +1,23 @@
-package com.cutedomain.kittyreader.domain.controllers
+package com.cutedomain.kittyreader.domain.utils
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
-import com.cutedomain.kittyreader.views.MainActivity
-import com.cutedomain.kittyreader.viewmodel.UserViewModel
-import com.cutedomain.kittyreader.domain.controllers.database.DatabaseController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 
 
-class UserController {
+class UserUtils {
 
     /* Necesario para el Logcat*/
     companion object {
         val TAG: String = "USER_CONTROLLER"
     }
 
-    private val mAuth = FirebaseAuth.getInstance()
-    private lateinit var db: DatabaseController
-    private lateinit var user: UserViewModel
+    private val mAuth: FirebaseAuth by lazy { Firebase.auth }
 
-    
-    
     /*
     * Login con Firebase
     *
@@ -30,21 +26,14 @@ class UserController {
     * @param context Pantalla de inicio de sesión
     *
     * @return Si el usuario se autentica correctamente*/
-    internal fun signIn(email: String, password: String, context: Context){
+    suspend fun signIn(email: String, password: String){
+        try {
+            val authResult = mAuth.signInWithEmailAndPassword(email, password).await()
 
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
-            if (it.isSuccessful){
-                context.startActivity(Intent(context, MainActivity::class.java))
-            }
-            Log.d(TAG, "signIn: Logging...")
-        }.addOnFailureListener {
-            Log.d(TAG, "signIn: Login failed!")
-        }.addOnCanceledListener {
-            Log.d(TAG, "signIn: El usuario ha cancelado el login")
+        } catch(e: Exception){
+            Log.d(TAG, "signIn: " + e.message)
         }
     }
-
-    
     
     /*
     * Registrar nuevos usuarios con firebase
@@ -70,7 +59,9 @@ class UserController {
         }
     }
 
-
+    fun getCurrentUser(): FirebaseUser?{
+        return mAuth.currentUser
+    }
 
     /* Inspeccionar el email
     * 
@@ -121,11 +112,9 @@ class UserController {
     * 
     * @param context Pantalla actual
     */
-    internal fun signOut(context: Context) {
-        if(mAuth.currentUser != null){
-            mAuth.signOut()
-            context.startActivity(Intent(context, MainActivity::class.java))
-        }
+    fun signOut(context: Context) {
+        mAuth.signOut()
+
     }
 
 }

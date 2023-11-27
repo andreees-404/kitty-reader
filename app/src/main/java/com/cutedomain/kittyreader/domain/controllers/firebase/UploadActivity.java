@@ -15,7 +15,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cutedomain.kittyreader.domain.utils.FileUtil;
+import com.cutedomain.kittyreader.domain.utils.PdfUtils;
 import com.cutedomain.kittyreader.models.Book;
+import com.cutedomain.kittyreader.models.EBook;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,6 +33,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import org.slf4j.ILoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -57,17 +62,7 @@ public class UploadActivity extends AppCompatActivity {
 
         // Obtener el formato de archivo
        Intent intent = getIntent();
-       Bundle bundle = intent.getExtras();
-       if (bundle != null) {
-           format = bundle.get("format").toString();
-           bookTitle = bundle.get("title").toString();
-
-           Log.d(TAG, "onCreate: Format: " + format.toLowerCase());
-           Log.d(TAG, "onCreate: Title: " + bookTitle);
-       }
-
        FirebaseUser user = mAuth.getCurrentUser();
-
         if (user != null) {
             // Seleccionar un archivo a subir
             selectFile(format);
@@ -75,8 +70,29 @@ public class UploadActivity extends AppCompatActivity {
             Log.d(TAG, "onCreate: " + user.getIdToken(true));
         } else {
             signInAnonimously();
-            selectFile(format);
+            Log.d(TAG, "onCreate: Logging anonynmously");
         }
+        
+        
+       try {
+           Bundle bundle = intent.getExtras();
+           if (bundle != null) {
+               format = bundle.get("format").toString();
+               bookTitle = bundle.get("title").toString();
+
+               Log.d(TAG, "onCreate: Format: " + format.toLowerCase());
+               Log.d(TAG, "onCreate: Title: " + bookTitle);
+           }
+       } catch (Exception e){
+           Log.d(TAG, "onCreate: " + e.getMessage());
+           format = "pdf";
+           bookTitle = "testBook_1";
+           selectFile("pdf");
+
+       }
+
+
+
     }
 
     private void signInAnonimously() {
@@ -101,15 +117,17 @@ public class UploadActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(Uri o) {
                     if (o != null) {
+                        // Decalarar el nombre y el formato antes de subirlo
+
                         // Enviar el libro a firebase
                         uploadBook(o);
                     }
                 }
             });
 
-            if (type == "pdf"){
+            if (type.toLowerCase() == "pdf"){
                 launcher.launch("application/pdf");
-            } else if (type == "epub"){
+            } else if (type.toLowerCase() == "epub"){
                 launcher.launch("application/epub+zip");
             }
         } catch (Exception e) {
@@ -125,48 +143,39 @@ public class UploadActivity extends AppCompatActivity {
     *
     * @param data uri del archivo que seleccionamos para subir*/
     private void uploadBook(Uri data) {
-        try{
+        try {
             ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading");
             progressDialog.show();
 
             StorageReference storageReference = storage.child("ebooks/" + bookTitle.toLowerCase() + System.currentTimeMillis() + format);
-            storageReference.putFile(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                    while ((!uriTask.isComplete())) {
-                        Uri url = uriTask.getResult();
-                        Book book = new Book(bookTitle, url.toString());
+            storageReference.putFile(data).addOnSuccessListener(taskSnapshot -> {
 
-                        Log.d(TAG, "onSuccess: url: " + url);
-                    }
-                        Toast.makeText(UploadActivity.this, "File uploaded!", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                    double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                    progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(UploadActivity.this, "Upload failed!", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "onFailure: " + e.getMessage());
-                    finish();
-                }
-            }).addOnCanceledListener(new OnCanceledListener() {
-                @Override
-                public void onCanceled() {
-                    Log.d(TAG, "onCanceled: Operaci[on cancelada!. Volviendo...");
-                    finish();
-                }
+                Task<byte[]> bytesTask = storageReference.getBytes(Long.MAX_VALUE);
+                bytesTask.addOnSuccessListener(bytes -> {
+                    ByteArrayInputStream pdfStream = new ByteArrayInputStream(bytes);
+
+                    // Extraer información del PDF
+                    PdfUtils.PdfInfo pdfInfo = PdfUtils.extractInfo(pdfStream);
+
+                    EBook eBook = new EBook("", pdfInfo.getTitle(), pdfInfo.getAuthor(), storageReference.getDownloadUrl().toString(), 0, "PDF");
+                    Log.d(TAG, "onSuccess: Title: " + pdfInfo.getTitle() + ", Author: " + pdfInfo.getAuthor());
+
+                    Toast.makeText(UploadActivity.this, "File uploaded!", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                });
+            }).addOnProgressListener(snapshot -> {
+                double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                progressDialog.setMessage("Uploaded " + (int) progress + "%");
+            }).addOnFailureListener(e -> {
+                Toast.makeText(UploadActivity.this, "Upload failed!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: " + e.getMessage());
+                finish();
+            }).addOnCanceledListener(() -> {
+                Log.d(TAG, "onCanceled: Operation canceled!. Returning...");
+                finish();
             });
-
-
-    } catch (Exception e){
+        } catch (Exception e) {
             Log.d(TAG, "uploadBook: Choose failed" + e.getMessage());
             finish();
         }

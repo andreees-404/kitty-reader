@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.screens
+package com.cutedomain.kittyreader.screens.others
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState

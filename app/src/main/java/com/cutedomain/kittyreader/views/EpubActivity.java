@@ -87,48 +87,16 @@ public class EpubActivity extends AppCompatActivity {
         pageContent.getSettings().setJavaScriptEnabled(true);
         pageContent.getSettings().setBuiltInZoomControls(true);
         pageContent.getSettings().setDisplayZoomControls(false);
-
+        pageContent.getSettings().setUseWideViewPort(false);
+        pageContent.getSettings().setLoadWithOverviewMode(true);
         pageContent.getSettings().setSupportZoom(true);
         pageContent.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         pageTitle = findViewById(R.id.pageTitle);
 
-        MyOnTouchListener listener = new MyOnTouchListener(this, this, pageContent);
-        pageContent.setOnTouchListener(listener);
+        MyOnTouchListener touchListener = new MyOnTouchListener(this, this, pageContent);
+        pageContent.setOnTouchListener(touchListener);
 
 
-
-        //pageContent.setOnTouchListener(new View.OnTouchListener() {
-        //    private float startX;
-
-        //    // Distancia mínima a deslizar por la pantalla
-        //    public static final float MIN_SWIPE_DISTANCE = 500;
-
-
-
-        //    @SuppressLint("ClickableViewAccessibility")
-        //    @Override
-        //    public boolean onTouch(View v, MotionEvent event) {
-        //        switch (event.getAction()){
-        //            case MotionEvent.ACTION_DOWN:
-        //            startX = event.getX();
-        //            break;
-
-        //            case MotionEvent.ACTION_UP:
-        //                float endX = event.getX();
-        //                float deltaX = endX - startX;
-
-        //                if (Math.abs(deltaX) > MIN_SWIPE_DISTANCE){
-        //                    if (deltaX > 0){
-        //                        showBackPage();
-        //                    } else {
-        //                        showNextPage();
-        //                    }
-        //                }
-        //                break;
-        //        }
-        //        return false;
-        //    }
-        //});
         pathListener = new OnFilePathRecivedListener() {
             @Override
             public void onFilePathRecivedListener(String path) {
@@ -146,7 +114,6 @@ public class EpubActivity extends AppCompatActivity {
             }};
         setFilePathRecived(pathListener);
 
-        // Copiar el libro desde la carpeta assets de Android Studio
 
         // Obtener la ruta de archivo
         getFilePath();
@@ -285,16 +252,16 @@ public class EpubActivity extends AppCompatActivity {
             // Obtener los metadatos
             metadata = book.getMetadata();
 
-            List<Author> author;
+            Author author;
 
-            author = metadata.getAuthors();
+            author = metadata.getAuthors().get(0);
 
-            Log.d(TAG, "openBook: Autor: " + author.get(0).toString());
+            Log.d(TAG, "openBook: Autor: " + author.toString());
             // Cargar la imagen de portada
             coverPage = book.getCoverPage();
             coverImage = book.getCoverImage();
 
-            EBookJTest _book = new EBookJTest(author.get(0).toString(), metadata.getTitles().get(0));
+            EBookJTest _book = new EBookJTest(author.toString(), metadata.getTitles().get(0));
 
             Log.d(TAG, "openBook: autor = " + _book.getAuthor());
             // Cargar las referencias -> Índice

@@ -5,8 +5,7 @@ data class EBook(
     val isbn : String,
     val title: String,
     val author: String,
-    val date: String,
-    val category: String,
-    val image: Int,
-    val format: String
+    val url: String,
+    val lastPage: Int,
+    val format: String,
 )

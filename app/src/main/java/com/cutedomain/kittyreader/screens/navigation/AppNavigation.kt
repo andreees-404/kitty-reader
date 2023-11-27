@@ -4,13 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.cutedomain.kittyreader.screens.AnimateScreen
-import com.cutedomain.kittyreader.screens.library.ChooseFile
-import com.cutedomain.kittyreader.screens.ConfigScreen
-import com.cutedomain.kittyreader.screens.GPScreen
 import com.cutedomain.kittyreader.screens.account.LoginScreen
 import com.cutedomain.kittyreader.screens.account.RegisterScreen
+import com.cutedomain.kittyreader.screens.library.ChooseFile
 import com.cutedomain.kittyreader.screens.library.LibraryScreen
+import com.cutedomain.kittyreader.screens.others.AnimateScreen
+import com.cutedomain.kittyreader.screens.others.ConfigScreen
+import com.cutedomain.kittyreader.screens.others.GPScreen
+import com.cutedomain.kittyreader.screens.others.MqttScreen
 
 
 // En este archivo navegaremos entre las pantallas
@@ -39,6 +40,9 @@ fun AppNavigation(){
         }
         composable(route=AppScreens.GPScreen.route){
             GPScreen(navController)
+        }
+        composable(route = AppScreens.MqttScreen.route){
+            MqttScreen()
         }
     }
 }

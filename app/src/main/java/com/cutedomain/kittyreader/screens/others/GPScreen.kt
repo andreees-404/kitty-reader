@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.screens
+package com.cutedomain.kittyreader.screens.others
 
 import android.content.Intent
 import androidx.compose.material3.Button

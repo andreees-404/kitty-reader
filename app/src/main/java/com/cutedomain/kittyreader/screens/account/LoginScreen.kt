@@ -4,6 +4,8 @@ package com.cutedomain.kittyreader.screens.account
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -58,14 +60,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
-import com.cutedomain.kittyreader.domain.controllers.UserController
+import com.cutedomain.kittyreader.domain.utils.UserUtils
 import com.cutedomain.kittyreader.screens.navigation.AppScreens
+import com.cutedomain.kittyreader.viewmodel.UserViewModel
 
-private val userController: UserController= UserController()
-
+val TAG = "LoginScreen"
+private val userController: UserUtils = UserUtils()
 /*
 * Mostrar los elementos ordenados en la pantalla
 *
@@ -110,6 +114,12 @@ fun LoginScreen(navController: NavController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginForm(navController: NavController){
+
+    // User ViewModel to set username and email values
+    val userViewModel: UserViewModel = viewModel<UserViewModel>()
+
+
+    // Email viewmodel
     val context = LocalContext.current
     Column(
         modifier= Modifier
@@ -207,11 +217,22 @@ fun LoginForm(navController: NavController){
 
             Button(
                 onClick = {
-                    if (userController.verifyEmail(email)){
-                        userController.signIn(email.trim(), pass.trim(), context)
-                        navController.navigate(AppScreens.LibraryScreen.route)
-                            }
-                          },
+                    Toast.makeText(context, "Logging", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "LoginForm: Button login pressd")
+                    val isValidEmail = userController.verifyEmail(email)
+                    Log.d(TAG, "LoginForm: email: $isValidEmail")
+                    if (userController.verifyEmail(email)) {
+                    //    // Iniciar sesión 
+                        userViewModel.setUserCredentials(email)
+                    //    userController.signIn(email.trim(), pass.trim(), context)
+
+                    //    // Ir a la pantalla principal
+                    //    Toast.makeText(context, "Login successfull", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Log.d(TAG, "LoginForm: email: $isValidEmail")
+                    //    Toast.makeText(context, "Email o contraseña inváliddos...", Toast.LENGTH_SHORT).show()
+                    }
+                },
 
                 contentPadding = PaddingValues(
                     start = 20.dp,

@@ -1,11 +1,13 @@
-package com.cutedomain.kittyreader.models
+package com.cutedomain.kittyreader.models.data
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Person2
 import androidx.compose.material.icons.outlined.Book
+import androidx.compose.material.icons.outlined.CodeOff
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Person2
@@ -39,7 +41,9 @@ val items=listOf<NavigationItem>(
 
     // Inicio y registro de usuarios
     NavigationItem(title="Login", selectedIcon = Icons.Default.Person, unSelectedIcon = Icons.Outlined.Person, route=AppScreens.LoginScreen.route),
-)
+
+    NavigationItem(title = "Mqtt" , selectedIcon = Icons.Default.Code, unSelectedIcon = Icons.Outlined.CodeOff, route = AppScreens.MqttScreen.route)
+    )
 
 val itemsLogged = listOf<NavigationItem>(
 
@@ -50,5 +54,6 @@ val itemsLogged = listOf<NavigationItem>(
 
     NavigationItem(title="Profile", selectedIcon = Icons.Default.Person2, unSelectedIcon = Icons.Outlined.Person2, route=AppScreens.ConfigScreen.route),
 
+    NavigationItem(title = "Mqtt" , selectedIcon = Icons.Default.Code, unSelectedIcon = Icons.Outlined.CodeOff, route = AppScreens.MqttScreen.route)
 
 )

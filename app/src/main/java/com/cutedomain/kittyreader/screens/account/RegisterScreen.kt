@@ -59,7 +59,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
-import com.cutedomain.kittyreader.domain.controllers.UserController
+import com.cutedomain.kittyreader.domain.utils.UserUtils
 import com.cutedomain.kittyreader.screens.navigation.AppScreens
 
 
@@ -68,7 +68,7 @@ import com.cutedomain.kittyreader.screens.navigation.AppScreens
 
 
 // private val userViewModel = viewModel { UserViewModel() }
-private val userController: UserController= UserController()
+private val userController: UserUtils = UserUtils()
 private var passwordMessage: String = ""
 private var isValidEmail: String = ""
 

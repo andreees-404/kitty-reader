@@ -15,11 +15,16 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         jcenter()
+
+        // jitpack for epublib
         maven(url=uri("https://jitpack.io"))
+
+        // Epublib
         maven(url="https://github.com/psiegman/mvn-repo/raw/master/releases")
 
-
-    }
+        // MQTT
+        maven(url = "https://repo.eclipse.org/content/repositories/paho-snapshots/")
+        }
 
 }
 

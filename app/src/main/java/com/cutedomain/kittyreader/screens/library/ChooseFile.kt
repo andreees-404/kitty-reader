@@ -36,8 +36,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
 import com.cutedomain.kittyreader.domain.controllers.firebase.UploadActivity
-import com.cutedomain.kittyreader.models.DataProvider
-import com.cutedomain.kittyreader.models.Formats
+import com.cutedomain.kittyreader.models.data.DataProvider
+import com.cutedomain.kittyreader.models.data.Formats
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)

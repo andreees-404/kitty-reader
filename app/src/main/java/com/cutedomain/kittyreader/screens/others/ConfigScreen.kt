@@ -1,4 +1,4 @@
-package com.cutedomain.kittyreader.screens
+package com.cutedomain.kittyreader.screens.others
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

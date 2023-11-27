@@ -45,6 +45,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,17 +63,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cutedomain.kittyreader.R
 import com.cutedomain.kittyreader.domain.controllers.StoragePermissionsActivity
-import com.cutedomain.kittyreader.domain.controllers.UserController
-import com.cutedomain.kittyreader.domain.utils.FileHandler
-import com.cutedomain.kittyreader.models.DataProvider
-import com.cutedomain.kittyreader.models.EBook
-import com.cutedomain.kittyreader.models.items
-import com.cutedomain.kittyreader.models.itemsLogged
+import com.cutedomain.kittyreader.domain.utils.UserUtils
+import com.cutedomain.kittyreader.models.data.items
+import com.cutedomain.kittyreader.models.data.itemsLogged
 import com.cutedomain.kittyreader.screens.navigation.AppScreens
+import com.cutedomain.kittyreader.viewmodel.BookViewModel
+import com.cutedomain.kittyreader.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 
@@ -81,8 +82,7 @@ import kotlinx.coroutines.launch
 
 
 
-val userController = UserController()
-val emailUser = "test@test.com"
+val userUtils = UserUtils()
 /*
 * Pantalla principal de la librería
 *
@@ -92,10 +92,15 @@ val emailUser = "test@test.com"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(navController: NavController){
+
+    // ViewModel
+    val userViewModel: UserViewModel = viewModel<UserViewModel>()
+
+    // Email by ViewModels
+    val vmEmail by userViewModel.email.observeAsState("Anónimo")
     // Local context
     val context = LocalContext.current
-    // Reader
-    val reader = FileHandler()
+
     // Scafold state -> Migration from ScaffoldState
     val snackbarHostState = remember { SnackbarHostState()}
     // Escupo
@@ -121,12 +126,12 @@ fun LibraryScreen(navController: NavController){
                         .padding(8.dp), verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(imageVector = Icons.Default.Person, contentDescription = null, modifier = Modifier.size(48.dp))
-                        Text(text = emailUser, fontWeight = FontWeight.Bold)
+                            Text(text = vmEmail, fontWeight = FontWeight.Bold)
                     }
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            if(emailUser == "Anónimo"){
+            if(vmEmail == "Anónimo"){
             // Iteramos en la lista de elementos
             items.forEachIndexed { index, item ->
                 NavigationDrawerItem(
@@ -176,7 +181,7 @@ fun LibraryScreen(navController: NavController){
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Button(onClick = { userController.signOut(context) }) {
+                    Button(onClick = { userUtils.signOut(context) }) {
                     Text(text = "Cerrar Sesión")
                 }
 
@@ -211,7 +216,7 @@ fun LibraryScreen(navController: NavController){
             }
         ) {
                 innerPadding ->
-            BookList(context = context, books = DataProvider.bookList, innerPadding = innerPadding)
+            BookList(context = context, innerPadding = innerPadding)
         }
     }
 }
@@ -232,7 +237,11 @@ fun LibraryScreen(navController: NavController){
 *   Padding proporcionado por la columna principal
 */
 @Composable
-fun BookList(context: Context, books: List<EBook>, innerPadding: PaddingValues) {
+fun BookList(context: Context, innerPadding: PaddingValues) {
+    // ViewModel
+    val bookViewModel = BookViewModel(LocalContext.current)
+
+    val vmBooks by bookViewModel.books.observeAsState(emptyList())
 
     Image(painter = painterResource(id = R.drawable.kittybanner),
         contentDescription = "Kitty Banner",
@@ -244,7 +253,7 @@ fun BookList(context: Context, books: List<EBook>, innerPadding: PaddingValues) 
             .fillMaxSize()
             .padding(paddingValues = PaddingValues(top = 250.dp))
     ) {
-        books.forEach{ bookItem ->
+        vmBooks.forEach{ bookItem ->
             item {
                 Card(
                     modifier= Modifier
@@ -265,13 +274,10 @@ fun BookList(context: Context, books: List<EBook>, innerPadding: PaddingValues) 
                     elevation = CardDefaults.cardElevation(8.dp)
                 ) {
                     BookCard(
-                        isbn = bookItem.isbn,
                         title = bookItem.title,
                         author = bookItem.author,
-                        date = bookItem.date,
-                        category = bookItem.category,
-                        image =bookItem.image
-                    )
+                        image = R.drawable.el_libro_de_enoc_anonimo_lg
+                        )
                 }
             }
         }
@@ -308,7 +314,7 @@ private fun openBook(context: Context, format: String) {
 *   Imagen representado en Integer -> R.drawable.image_example
 */
 @Composable
-fun BookCard(isbn: String, title: String, author: String, date: String, category: String, image: Int) {
+fun BookCard(title: String, author: String, image: Int) {
 
     // Book progress
     val currentProgress by remember { mutableStateOf(0f) }

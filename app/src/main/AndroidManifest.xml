@@ -4,14 +4,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <!-- Required to load ebooks -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Required to load ebooks -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- Dar de baja el permiso de identificador del anunciante -->
@@ -20,6 +18,9 @@
         tools:node="remove" /> <!-- MapBox permissions -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Mqtt Permissions -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -32,6 +33,12 @@
         android:theme="@style/Theme.KittyReader.SplashScreen"
         tools:targetApi="31">
         <activity
+            android:name=".domain.MqttActivity"
+            android:exported="false"
+            android:label="@string/title_activity_mqtt"
+            android:theme="@style/Theme.KittyReader.SplashScreen" />
+
+        <activity
             android:name=".domain.controllers.StoragePermissionsActivity"
             android:exported="false" />
         <activity
@@ -39,8 +46,6 @@
             android:exported="false"
             android:label="@string/title_activity_maps"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-
         <activity
             android:name=".domain.controllers.firebase.UploadActivity"
             android:exported="false" />
@@ -52,15 +57,11 @@
         <activity
             android:name=".domain.controllers.auth.AuthActivity"
             android:exported="false" />
-
-
-
-
         <activity
             android:name=".views.PdfActivity"
             android:exported="true"
             android:label="KittyReader"
-            android:theme="@style/Theme.AppCompat.Light" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".views.MainActivity"
             android:exported="true"
@@ -87,6 +88,14 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- Mqtt Service -->
+        <service
+            android:name="org.eclipse.paho.android.service.MqttService"
+            android:exported="false"/>
+
     </application>
+
+
 
 </manifest>

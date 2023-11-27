@@ -79,6 +79,8 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
+    implementation("androidx.navigation:navigation-fragment:2.7.5")
+    implementation("androidx.navigation:navigation-ui:2.7.5")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -136,7 +138,7 @@ dependencies {
     //implementation("com.facebook.android:facebook-android-sdk:[4,5)")
 
     // PDF Viewer
-    implementation("com.github.barteksc:android-pdf-viewer:2.8.2")
+    implementation("com.github.barteksc:android-pdf-viewer:3.2.0-beta.1")
 
     // Courutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
@@ -151,5 +153,13 @@ dependencies {
 
 
     implementation("org.osmdroid:osmdroid-android:6.1.14")
+
+    // PDF BOX
+    implementation ("com.tom-roush:pdfbox-android:2.0.27.0")
+
+
+    implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0")
+    implementation("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
+
 
 }
